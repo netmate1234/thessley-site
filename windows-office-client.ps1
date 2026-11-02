@@ -1,10 +1,14 @@
 <#
 .SYNOPSIS
-  Set up a Thessley office client: OpenSSH with key-only sign-in and the
+  Set up a Thessley office client: key-only OpenSSH sign-in and the
   Office PC Users logon model (interactive, Remote Desktop and network).
 
+  OpenSSH Server itself is a separate step: install the capability first.
+  This script does not install it.
+
 .DESCRIPTION
-  Run elevated on an installed, domain-joined Windows 11 Pro machine.
+  Run elevated on an installed, domain-joined Windows 11 Pro machine with
+  OpenSSH Server already installed.
   Everything it changes is backed up under C:\ProgramData\ThessleyOffice\
   backup-<timestamp>, and -Rollback restores the newest backup.
 
@@ -164,19 +168,14 @@ $sshChanged = $false
 $keyInstalled = $false
 
 if (-not $SkipSsh) {
-    # --- OpenSSH server ---------------------------------------------------
-    $capability = Get-WindowsCapability -Online -Name 'OpenSSH.Server*' |
-        Select-Object -First 1
-    if (-not $capability -or $capability.State -ne 'Installed') {
-        Write-Host 'Installing OpenSSH Server...'
-        Add-WindowsCapability -Online -Name 'OpenSSH.Server~~~~0.0.1.0' | Out-Null
+    # --- OpenSSH must already be installed --------------------------------
+    # Installing the capability is its own step in the guide: it changes the
+    # machine, and it is easier to see and undo on its own.
+    if (-not (Get-Service -Name sshd -ErrorAction SilentlyContinue)) {
+        throw 'OpenSSH Server is not installed. Install it first: Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0; Set-Service sshd -StartupType Automatic; Start-Service sshd, then add the firewall rule. Then run this again.'
     }
     Set-Service -Name sshd -StartupType Automatic
     Start-Service sshd
-    if (-not (Get-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -ErrorAction SilentlyContinue)) {
-        New-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -DisplayName 'OpenSSH Server (sshd)' `
-            -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 | Out-Null
-    }
 
     # --- Where does this account's key go? --------------------------------
     $isAdmin = Test-IsAdminAccount $User
