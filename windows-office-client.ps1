@@ -95,6 +95,23 @@ function Save-File([string] $Path) {
     }
 }
 
+function Resolve-Account([string] $Name) {
+    # Accept DOMAIN\user (NetBIOS), user@domain (UPN) and a bare user name,
+    # and return the canonical DOMAIN\user that icacls and the local groups use.
+    $candidates = @($Name)
+    if ($Name -match '^([^\\]+)\\(.+)$') {
+        $candidates += ('{0}@{1}' -f $Matches[2], $Matches[1])
+    }
+    foreach ($candidate in $candidates) {
+        try {
+            $sid = (New-Object Security.Principal.NTAccount($candidate)).Translate(
+                [Security.Principal.SecurityIdentifier])
+            return $sid.Translate([Security.Principal.NTAccount]).Value
+        } catch { }
+    }
+    throw "Cannot resolve '$Name'. Use DOMAIN\user with the NetBIOS domain (for example THESSLEYLAB\martin) or user@domain, and make sure this PC is domain-joined and can reach a domain controller."
+}
+
 function Get-ProfilePath([string] $Account) {
     $sid = (New-Object Security.Principal.NTAccount($Account)).Translate(
         [Security.Principal.SecurityIdentifier]).Value
@@ -162,6 +179,7 @@ if (-not $SkipSsh -or -not $SkipLogonModel) {
         $User = Read-Host 'Account that may sign in, for example CONTOSO\alice'
     }
     if ([string]::IsNullOrWhiteSpace($User)) { throw 'No account given.' }
+    $User = Resolve-Account $User
 }
 
 $sshChanged = $false
