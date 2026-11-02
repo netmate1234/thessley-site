@@ -100,6 +100,7 @@ if (-not (Get-NetFirewallRule -Name OpenSSH-Server-In-TCP -ErrorAction SilentlyC
   <details>
     <summary>If it goes wrong</summary>
     <ul>
+      <li><strong>SSH works on the PC but not from another computer</strong> — the firewall rule is only enabled for some profiles: <code>Set-NetFirewallRule -Name OpenSSH-Server-In-TCP -Enabled True -Profile Any</code>.</li>
       <li><strong>“Permission denied (publickey)”</strong> — wrong key file for the account (<code>.ssh\authorized_keys</code> vs <code>administrators_authorized_keys</code>), file ACLs, or <code>SeNetworkLogonRight</code>.</li>
       <li><strong>“Cannot resolve” the account</strong> — not domain-joined or no DC reachable; use <code>.\localuser</code> for a local account.</li>
       <li><strong>Passkey tile says “Approval failed or expired”</strong> — the AD service is down: <code>sc.exe query ThessleyADApi</code> on the DC (“1060” = not installed, see <a href="?page_id=114">AD service</a>).</li>
