@@ -34,7 +34,7 @@
   <section class="td-hero">
     <p class="td-kicker">Thessley computer installation</p>
     <h1>Windows 11 Pro office client</h1>
-    <p>One command installs OpenSSH, adds your key and applies the <strong>Office PC Users</strong> logon model.</p>
+    <p>OpenSSH with key sign-in and the <strong>Office PC Users</strong> logon model, in three steps.</p>
     <p><a href="?page_id=16">All downloads</a> · <a href="?page_id=43">Windows agent</a> · <a href="?page_id=42">Linux</a> · <a href="?page_id=114">AD service</a></p>
   </section>
 
@@ -42,8 +42,9 @@
     <h2>Before you start</h2>
     <div class="td-card">
       <ul>
-        <li>Windows 11 <strong>Pro, Enterprise or Education</strong>, installed and joined to the domain (Home cannot join a domain or host RDP). The installer refuses an AD user on an unjoined PC.</li>
-        <li>An elevated PowerShell window, the account signed in once, and its public key (clipboard, a <code>.pub</code> file, or a URL).</li>
+        <li>Windows 11 <strong>Pro, Enterprise or Education</strong>, installed and joined to the domain.</li>
+        <li>An elevated PowerShell window, and the user signed in once (so the profile exists).</li>
+        <li>The public key of the user, or a URL that serves it.</li>
         <li>A local break-glass administrator you can still use if the domain is unreachable.</li>
       </ul>
     </div>
@@ -51,85 +52,73 @@
 
   <section id="guided">
     <h2>Guided install</h2>
-    <div class="td-card">
-      <h3>One-user workstation</h3>
-      <pre><code>irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1 | iex</code></pre>
-      <p>Press Enter at the question. It uses the account signed in at this PC, takes a <code>.pub</code> key already in that profile (or the clipboard), and does the key and logon model in one go.</p>
-    </div>
-    <p>Everything below is the same thing in steps, for a PC that is not a plain one-user workstation.</p>
 
-    <h3>Step 1 — Install OpenSSH Server</h3>
+    <h3>1. Install OpenSSH Server</h3>
     <pre><code>Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
 Set-Service -Name sshd -StartupType Automatic
 Start-Service sshd
 if (-not (Get-NetFirewallRule -Name OpenSSH-Server-In-TCP -ErrorAction SilentlyContinue)) {
-  New-NetFirewallRule -Name OpenSSH-Server-In-TCP -DisplayName "OpenSSH Server (sshd)" -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+  New-NetFirewallRule -Name OpenSSH-Server-In-TCP `
+    -DisplayName "OpenSSH Server (sshd)" -Enabled True -Direction Inbound `
+    -Protocol TCP -Action Allow -LocalPort 22
 }</code></pre>
-    <p>Windows usually creates that firewall rule with the capability, so the last step is normally a no-op. If an earlier run already made the rule, <code>New-NetFirewallRule</code> otherwise answers “Cannot create a file when that file already exists” — harmless, the rule is there.</p>
-    <p>Check it before step 2:</p>
-    <pre><code>Get-Service sshd
-(Test-NetConnection localhost -Port 22).TcpTestSucceeded</code></pre>
+    <p>Windows normally creates the firewall rule itself; the guard just keeps a rerun quiet.</p>
 
-    <h3>Step 2 — Add the key</h3>
-    <p>Copy the account’s public key first, or paste a URL that serves it (for example <code>https://github.com/alice.keys</code>) at the prompt. It uses the signed-in user by default; pass <code>-User</code> for a different one. The answer is recorded as the computer description.</p>
+    <h3>2. Add the key</h3>
     <pre><code>&amp; ([scriptblock]::Create((irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1))) -SshOnly</code></pre>
-    <p>No key yet? The normal exchange is two commands on the computer you connect <em>from</em>:</p>
-    <pre><code>ssh-keygen -t ed25519 -C "alice@laptop"
-cat ~/.ssh/id_ed25519.pub
-# PowerShell: Get-Content $env:USERPROFILE\.ssh\id_ed25519.pub</code></pre>
-    <p>Paste that line at the installer prompt, or point the installer at a file or URL with <code>-KeyUrl</code>.</p>
-    <p>The account is <code>DOMAIN\user</code> with the <em>short</em> (NetBIOS) domain name, or <code>user@domain</code>. A DNS domain such as <code>corp.example.com\alice</code> does not resolve.</p>
-    <p>It adds the key with Windows sshd’s ACLs, sets <code>PubkeyAuthentication yes</code>, turns password sign-in off and restarts <code>sshd</code>. Then test it from another computer: <code>ssh -i &lt;key&gt; &lt;user&gt;@&lt;host&gt;</code>.</p>
+    <p>It uses the user signed in at this PC (Enter accepts), adds the key with the right ACLs, sets <code>PubkeyAuthentication yes</code>, turns password sign-in off and restarts <code>sshd</code>. The key comes from the clipboard, a <code>.pub</code> file, or a URL such as <code>https://github.com/alice.keys</code>.</p>
+    <p>Test it from another computer before step 3: <code>ssh -i &lt;key&gt; &lt;user&gt;@&lt;host&gt;</code>.</p>
 
-    <h3>Step 3 — The office logon model</h3>
+    <h3>3. The office logon model</h3>
     <pre><code>&amp; ([scriptblock]::Create((irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1))) -LogonModelOnly</code></pre>
-    <p>Creates the local group <strong>Office PC Users</strong> and allows only <code>Administrators</code> and that group to sign in locally, over Remote Desktop and over the network. Keep the console open while you do it.</p>
+    <p>Creates the local group <strong>Office PC Users</strong> and allows only <code>Administrators</code> and that group to sign in locally, over Remote Desktop and over the network. Keep the console open while it runs.</p>
 
-    <p>Both installer steps at once, after step 1: <code>irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1 | iex</code></p>
-    <p>Options: <code>-User 'CONTOSO\alice'</code> · <code>-KeyUrl https://github.com/alice.keys</code> · <code>-KeepPasswordAuth</code> · <code>-Group 'Office PC Users'</code> · <code>-Rollback</code>.</p>
-    <p>Anything replaced is copied to <code>C:\ProgramData\ThessleyOffice\backup-&lt;timestamp&gt;</code> first. The <a href="https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/SHA256SUMS.txt">SHA-256 checksums</a> cover the installer if you want to verify it first.</p>
+    <p>Steps 2 and 3 in one command, after step 1: <code>irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1 | iex</code></p>
+  </section>
+
+  <section id="verify">
+    <h2>Verify</h2>
+    <ul>
+      <li>Sign in at the console and over RDP as the user: both work, and it is an ordinary user.</li>
+      <li><code>ssh -i &lt;key&gt; &lt;user&gt;@&lt;host&gt;</code> opens a shell.</li>
+      <li>An account in neither <code>Administrators</code> nor <code>Office PC Users</code> is refused by all three.</li>
+    </ul>
   </section>
 
   <details>
-    <summary>Manual setup, command by command</summary>
-  <section id="sshd">
-    <h2>Install OpenSSH Server</h2>
-    <p>Windows ships OpenSSH as a capability. Install the server, start it at boot, and open only TCP 22.</p>
-    <pre><code>Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
-Set-Service -Name sshd -StartupType Automatic
-Start-Service sshd
-New-NetFirewallRule -Name OpenSSH-Server-In-TCP -DisplayName "OpenSSH Server (sshd)" `
-  -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22</code></pre>
+    <summary>Options</summary>
+    <ul>
+      <li><code>-User 'CONTOSO\alice'</code> — a different user than the one signed in.</li>
+      <li><code>-KeyUrl https://github.com/alice.keys</code> — where to fetch the key.</li>
+      <li><code>-KeepPasswordAuth</code> — keep password sign-in alongside the key.</li>
+      <li><code>-Group 'Office PC Users'</code> — a different local group.</li>
+      <li><code>-Rollback</code> — restore the saved <code>sshd_config</code> and logon rights.</li>
+    </ul>
+    <p>Backups go to <code>C:\ProgramData\ThessleyOffice\backup-&lt;timestamp&gt;</code>. Checksums: <a href="https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/SHA256SUMS.txt">SHA256SUMS.txt</a>.</p>
+  </details>
 
-    <h3>Add the public key</h3>
-    <p>For a standard (non-administrator) account the key goes in that user’s own profile. Run this <em>as that user</em> after their first sign-in:</p>
-    <pre><code>$key = 'ssh-ed25519 AAAA... your-name@your-host'
-$dir = Join-Path $env:USERPROFILE '.ssh'
+  <details>
+    <summary>If it goes wrong</summary>
+    <ul>
+      <li><strong>“Permission denied (publickey)”</strong> — wrong key file for the account (<code>.ssh\authorized_keys</code> vs <code>administrators_authorized_keys</code>), file ACLs, or <code>SeNetworkLogonRight</code>.</li>
+      <li><strong>“Cannot resolve” the account</strong> — not domain-joined or no DC reachable; use <code>.\localuser</code> for a local account.</li>
+      <li><strong>Passkey tile says “Approval failed or expired”</strong> — the AD service is down: <code>sc.exe query ThessleyADApi</code> on the DC (“1060” = not installed, see <a href="?page_id=114">AD service</a>).</li>
+      <li><strong>Domain trust failed</strong> — sign in locally, <code>Reset-ComputerMachinePassword -Server DC1 -Credential (Get-Credential CONTOSO\Administrator)</code>, reboot.</li>
+    </ul>
+  </details>
+
+  <details>
+    <summary>Raw commands (no installer)</summary>
+    <p>Key for a standard user, run as that user:</p>
+    <pre><code>$dir = Join-Path $env:USERPROFILE '.ssh'
 New-Item -ItemType Directory -Force $dir | Out-Null
-Add-Content -Path (Join-Path $dir 'authorized_keys') -Value $key
+Add-Content "$dir\authorized_keys" 'ssh-ed25519 AAAA... user@host'
 icacls $dir /inheritance:r /grant "$($env:USERNAME):(OI)(CI)F" /grant "SYSTEM:(OI)(CI)F"
-icacls (Join-Path $dir 'authorized_keys') /inheritance:r /grant "$($env:USERNAME):F" /grant "SYSTEM:F"</code></pre>
-    <p>The default <code>C:\ProgramData\ssh\sshd_config</code> ends with a <code>Match Group administrators</code> block that redirects administrator keys to a shared file. Either leave it and put the key in <code>C:\ProgramData\ssh\administrators_authorized_keys</code> (ACL: <code>Administrators</code> and <code>SYSTEM</code> only), or remove that block if every account uses its own profile:</p>
-    <pre><code>icacls C:\ProgramData\ssh\administrators_authorized_keys /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"</code></pre>
-
-    <h3>Turn off password sign-in</h3>
+icacls "$dir\authorized_keys" /inheritance:r /grant "$($env:USERNAME):F" /grant "SYSTEM:F"</code></pre>
+    <p>Administrator keys go to <code>C:\ProgramData\ssh\administrators_authorized_keys</code> instead (ACL: Administrators and SYSTEM). Then in <code>C:\ProgramData\ssh\sshd_config</code>:</p>
     <pre><code>PubkeyAuthentication yes
 PasswordAuthentication no</code></pre>
-    <p>Put those two lines in <code>C:\ProgramData\ssh\sshd_config</code>, then restart and test from another computer:</p>
-    <pre><code>Restart-Service sshd
-ssh -i ~/.ssh/&lt;key&gt; &lt;user&gt;@&lt;host&gt;</code></pre>
-  </section>
-
-  <section id="logon-model">
-    <h2>The office logon model</h2>
-    <p>The goal: only administrators and members of a local <strong>Office PC Users</strong> group may sign in at the PC, over Remote Desktop, and over the network. Everything else is refused, including SSH.</p>
-    <pre><code>New-LocalGroup -Name "Office PC Users" -Description "May sign in at this PC"
-Add-LocalGroupMember -Group "Office PC Users" -Member "CONTOSO\alice"</code></pre>
-    <div class="td-warn">
-      <p><strong>Keep a way back in.</strong> Before changing logon rights, export the current policy and keep a local administrator plus console access. If the only account allowed to sign in is a domain account and the domain is unreachable, the PC is locked out.</p>
-    </div>
-    <pre><code>secedit /export /cfg C:\Windows\Temp\secpol-before.inf</code></pre>
-    <p>Create <code>C:\Windows\Temp\office-rights.inf</code> with these rights. <code>*S-1-5-32-544</code> is the local Administrators group; the group name is the local group created above.</p>
+    <p>Logon rights, with <code>C:\Windows\Temp\office-rights.inf</code>:</p>
     <pre><code>[Unicode]
 Unicode=yes
 [Version]
@@ -139,34 +128,9 @@ Revision=1
 SeInteractiveLogonRight = *S-1-5-32-544,Office PC Users
 SeRemoteInteractiveLogonRight = *S-1-5-32-544,Office PC Users
 SeNetworkLogonRight = *S-1-5-32-544,Office PC Users</code></pre>
-    <pre><code>secedit /configure /db C:\Windows\Temp\secedit.sdb /cfg C:\Windows\Temp\office-rights.inf /areas USER_RIGHTS
-gpupdate /force</code></pre>
-    <div class="td-warn">
-      <p><strong>Do not leave out <code>SeNetworkLogonRight</code>.</strong> SSH signs in as a <em>network</em> logon. With only the interactive and Remote Desktop rights, a correct key is still answered with <code>Permission denied (publickey)</code> — the exact failure this lab hit. The safe set is all three rights for the same two principals.</p>
-    </div>
-    <h3>Roll back</h3>
-    <pre><code>secedit /configure /db C:\Windows\Temp\secedit.sdb /cfg C:\Windows\Temp\secpol-before.inf /areas USER_RIGHTS</code></pre>
-  </section>
+    <pre><code>secedit /export /cfg C:\Windows\Temp\secpol-before.inf
+secedit /configure /db C:\Windows\Temp\secedit.sdb /cfg C:\Windows\Temp\office-rights.inf /areas USER_RIGHTS</code></pre>
   </details>
-
-  <section id="verify">
-    <h2>Verify</h2>
-    <ul>
-      <li>Sign in at the console and over RDP as the account: both work, and it is an ordinary user.</li>
-      <li><code>ssh -i &lt;key&gt; &lt;user&gt;@&lt;host&gt;</code> opens a shell.</li>
-      <li>An account in neither <code>Administrators</code> nor <code>Office PC Users</code> is refused by all three.</li>
-    </ul>
-  </section>
-
-  <section id="troubleshooting">
-    <h2>If it goes wrong</h2>
-    <ul>
-      <li><strong>Passkey tile says “Approval failed or expired”</strong> — the AD service is not reachable: check <code>sc.exe query ThessleyADApi</code> on the domain controller. “1060” means it is not installed (see the <a href="?page_id=114">AD service guide</a>).</li>
-      <li><strong>“Permission denied (publickey)” with a good key</strong> — profile key vs <code>administrators_authorized_keys</code>, file ACLs, or <code>SeNetworkLogonRight</code>.</li>
-      <li><strong>Domain trust failed</strong> — sign in locally and run <code>Reset-ComputerMachinePassword -Server DC1 -Credential (Get-Credential CONTOSO\Administrator)</code>, then reboot.</li>
-      <li><strong>SSH slow right after boot</strong> — wait for the domain controller and retry.</li>
-    </ul>
-  </section>
 </main>
 <script>
 (() => {
