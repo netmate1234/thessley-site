@@ -1,0 +1,251 @@
+<!-- wp:html -->
+<style>
+.thessley-downloads{--td-ink:#f2f6fc;--td-muted:#cad5e3;--td-blue:#1976b5;--td-line:#40516a;color:var(--td-ink);font-family:inherit;background:#0c1422;padding:clamp(1rem,3vw,2rem);border-radius:18px;color-scheme:dark}
+.thessley-downloads *{box-sizing:border-box}
+.thessley-downloads .td-hero{padding:clamp(1.8rem,5vw,3.2rem);border-radius:22px;background:linear-gradient(128deg,#102b4d,#176b9e);color:#fff}
+.thessley-downloads .td-hero .td-kicker{margin:.1rem 0 .55rem;color:#b8e4f7;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.thessley-downloads .td-hero p{max-width:65ch;color:#e4f0f7;line-height:1.65}
+.thessley-downloads section{margin:2.8rem 0}
+.thessley-downloads h2{font-size:clamp(1.55rem,3vw,2rem);color:#f5f8fc}
+.thessley-downloads h3{margin-top:1.8rem;color:#eef4fc}
+.thessley-downloads p,.thessley-downloads li{line-height:1.7;color:var(--td-muted)}
+.thessley-downloads a:not(.td-download){color:#9edaff;text-decoration:underline;text-underline-offset:.15em}
+.thessley-downloads a:not(.td-download):hover{color:#d1efff}
+.thessley-downloads .td-card{margin:1rem 0;padding:1.25rem 1.4rem;border:1px solid var(--td-line);border-radius:16px;background:#172235}
+.thessley-downloads .td-card h3{margin:.1rem 0 .4rem}
+.thessley-downloads .td-card p{margin:.45rem 0}
+.thessley-downloads .td-download{display:inline-block;margin:.45rem .7rem .25rem 0;padding:.7rem 1rem;border-radius:999px;background:#145a8d;color:#fff!important;font-weight:750;text-decoration:none}
+.thessley-downloads .td-download:hover{background:#0f456d}
+.thessley-downloads .td-warn{padding:1rem 1.2rem;border-left:4px solid #e3ad45;border-radius:0 10px 10px 0;background:#332a1b;color:#ffe6b2}
+.thessley-downloads pre{position:relative;overflow:auto;padding:3.1rem 1rem 1rem;border-radius:10px;background:#17243a;color:#f0f5f9;font-size:.9rem;line-height:1.55}
+.thessley-downloads pre code{display:block;min-width:max-content;white-space:pre;overflow-wrap:normal}
+.thessley-downloads .td-copy{position:absolute;top:.55rem;right:.6rem;display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .6rem;border:1px solid #9ab2cc;border-radius:7px;background:#314966;color:#fff;font:inherit;font-size:.78rem;cursor:pointer}
+.thessley-downloads .td-copy:hover,.thessley-downloads .td-copy:focus-visible{background:#42658a;outline:2px solid #b4e6ff;outline-offset:2px}
+.thessley-downloads .td-copy svg{width:1rem;height:1rem;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.thessley-downloads .td-copy-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.thessley-downloads :not(pre)>code{padding:.1em .3em;border-radius:4px;background:#25354b;color:#f4f7fb}
+
+.thessley-downloads .td-hero h1{margin:.2rem 0 .7rem;color:#fff;font-size:clamp(2rem,5vw,3rem)}
+.thessley-downloads details{margin:1rem 0;padding:0 1rem 1rem;border:1px solid var(--td-line);border-radius:12px;background:#121e30}
+.thessley-downloads summary{padding:1rem 0;color:#f5f8fc;font-size:1.1rem;font-weight:750;cursor:pointer}
+.thessley-downloads details[open]>summary{border-bottom:1px solid var(--td-line)}
+</style>
+<main class="thessley-downloads alignwide">
+  <section class="td-hero">
+    <p class="td-kicker">Thessley computer installation</p>
+    <h1>Windows 11 Pro office client</h1>
+    <p>A clean Pro install for the office logon test: UEFI with TPM 2.0, domain join, OpenSSH with key sign-in, and the <strong>Office PC Users</strong> logon model.</p>
+    <p><a href="?page_id=16">All downloads</a> · <a href="?page_id=43">Thessley Windows agent</a> · <a href="?page_id=42">Ubuntu / Linux installation</a> · <a href="?page_id=114">AD service installation</a></p>
+  </section>
+
+  <section id="requirements">
+    <h2>What you need</h2>
+    <div class="td-card">
+      <h3>Windows 11 Pro, Enterprise or Education</h3>
+      <p>Windows Home cannot join a domain and cannot host Remote Desktop, so it cannot run this model at all. Use Pro or higher.</p>
+      <p>Plan for 4 GB RAM, 2 vCPUs and 60 GB of disk. Keep UEFI and a TPM 2.0 device: the passkey and PIV work later needs the TPM, and Windows 11 Setup expects it.</p>
+    </div>
+    <div class="td-card">
+      <h3>The installation media</h3>
+      <p>Download the Windows 11 ISO from Microsoft’s <a href="https://www.microsoft.com/software-download/windows11">software download page</a> and check its SHA-256 against the value Microsoft publishes for that build. A volume-licence ISO from your own agreement works the same way.</p>
+      <p>On this lab host the ISO is already installed as <code>/var/lib/libvirt/images/windows-pro-install.iso</code> (about 7.2 GB). Reuse it instead of downloading another copy, and keep the matching virtio driver ISO (<code>virtio-tools.iso</code>) next to it for the disk driver and guest tools.</p>
+    </div>
+    <div class="td-warn">
+      <p><strong>Licensing.</strong> This guide only installs the operating system. Activation is your responsibility: retail, volume or evaluation media must match the licence you hold, and the lab network should stay isolated from production while the weak test passwords from the lab notes are in use.</p>
+    </div>
+  </section>
+
+  <section id="create-vm">
+    <h2>Create the virtual machine</h2>
+    <p>Run this on the lab host. Adjust the name, disk path and memory for your host; the shape (q35, UEFI, TPM 2.0, virtio disk and network) is what matters.</p>
+    <pre><code>sudo virt-install \
+  --name office-client \
+  --osinfo win11 \
+  --memory 4096 --vcpus 2 \
+  --machine q35 --boot uefi,secure=on \
+  --tpm backend.type=emulator,backend.version=2.0 \
+  --disk path=/var/lib/libvirt/images/office-client.qcow2,size=60,format=qcow2,bus=virtio \
+  --cdrom /var/lib/libvirt/images/windows-pro-install.iso \
+  --disk path=/var/lib/libvirt/images/virtio-tools.iso,device=cdrom \
+  --network network=default,model=virtio \
+  --graphics spice,listen=127.0.0.1 \
+  --video qxl \
+  --noautoconsole</code></pre>
+    <p>If libvirt rejects <code>--boot uefi,secure=on</code>, install the OVMF Secure Boot firmware (<code>ovmf</code> package) or drop <code>,secure=on</code>; the TPM still works without Secure Boot, but Windows 11 Setup may ask you to acknowledge the requirement.</p>
+  </section>
+
+  <section id="install-windows">
+    <h2>Install Windows</h2>
+    <ol>
+      <li>Connect to the console (<code>virt-viewer -c qemu:///system office-client</code>), boot the ISO, and choose <strong>Custom: Install Windows only</strong>.</li>
+      <li>If Setup shows no disk, choose <strong>Load driver</strong> and pick <code>amd64\w11\viostor.inf</code> (or <code>vioscsi.inf</code>) from the virtio ISO. The disk then appears.</li>
+      <li>Select <strong>Windows 11 Pro</strong> and install to the whole disk.</li>
+      <li>At the network/account step, create a <strong>local break-glass administrator</strong> rather than tying the machine to a Microsoft account. On current builds press <strong>Shift+F10</strong> and run <code>start ms-cxh:localonly</code>; on older builds you can use <code>oobe\bypassnro</code>. The break-glass account is what gets you back in if domain sign-in or a logon policy goes wrong.</li>
+      <li>Install the guest tools from the virtio ISO (<code>virtio-win-guest-tools.exe</code>) for display, clipboard and ballooning, then reboot.</li>
+      <li>Run Windows Update, set the time zone, and confirm the clock is correct. Phone approvals are time-sensitive.</li>
+    </ol>
+    <pre><code>Set-TimeZone -Id "W. Europe Standard Time"
+w32tm /resync</code></pre>
+  </section>
+
+  <section id="domain-join">
+    <h2>Join the domain</h2>
+    <p>Name the computer before joining, then use a domain account that may join workstations. The restart is required.</p>
+    <pre><code>Rename-Computer -NewName OFFICE1 -Restart</code></pre>
+    <pre><code>Add-Computer -DomainName lab.thessley.test -Credential (Get-Credential THESSLEYLAB\Administrator) -Restart</code></pre>
+    <p>After the restart, sign in once with the domain account you will use for the test so its profile exists, then confirm the secure channel:</p>
+    <pre><code>Test-ComputerSecureChannel -Verbose</code></pre>
+  </section>
+
+  <section id="sshd">
+    <h2>Install OpenSSH Server</h2>
+    <p>Windows ships OpenSSH as a capability. Install the server, start it at boot, and open only TCP 22.</p>
+    <pre><code>Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+Set-Service -Name sshd -StartupType Automatic
+Start-Service sshd
+New-NetFirewallRule -Name OpenSSH-Server-In-TCP -DisplayName "OpenSSH Server (sshd)" `
+  -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22</code></pre>
+
+    <h3>Add the public key</h3>
+    <p>For a standard (non-administrator) account the key goes in that user’s own profile. Run this <em>as that user</em> after their first sign-in:</p>
+    <pre><code>$key = 'ssh-ed25519 AAAA... your-name@your-host'
+$dir = Join-Path $env:USERPROFILE '.ssh'
+New-Item -ItemType Directory -Force $dir | Out-Null
+Add-Content -Path (Join-Path $dir 'authorized_keys') -Value $key
+icacls $dir /inheritance:r /grant "$($env:USERNAME):(OI)(CI)F" /grant "SYSTEM:(OI)(CI)F"
+icacls (Join-Path $dir 'authorized_keys') /inheritance:r /grant "$($env:USERNAME):F" /grant "SYSTEM:F"</code></pre>
+    <p>The default <code>C:\ProgramData\ssh\sshd_config</code> ends with a <code>Match Group administrators</code> block that redirects administrator keys to a shared file. Either leave it and put the key in <code>C:\ProgramData\ssh\administrators_authorized_keys</code> (ACL: <code>Administrators</code> and <code>SYSTEM</code> only), or remove that block if every account uses its own profile:</p>
+    <pre><code>icacls C:\ProgramData\ssh\administrators_authorized_keys /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"</code></pre>
+
+    <h3>Turn off password sign-in</h3>
+    <pre><code>PubkeyAuthentication yes
+PasswordAuthentication no</code></pre>
+    <p>Put those two lines in <code>C:\ProgramData\ssh\sshd_config</code>, then restart and test from another computer:</p>
+    <pre><code>Restart-Service sshd
+ssh -i ~/.ssh/thessley-vm-debug martin@office1</code></pre>
+  </section>
+
+  <section id="logon-model">
+    <h2>The office logon model</h2>
+    <p>The goal: only administrators and members of a local <strong>Office PC Users</strong> group may sign in at the PC, over Remote Desktop, and over the network. Everything else is refused, including SSH.</p>
+    <pre><code>New-LocalGroup -Name "Office PC Users" -Description "May sign in at this PC"
+Add-LocalGroupMember -Group "Office PC Users" -Member "THESSLEYLAB\martin"</code></pre>
+    <div class="td-warn">
+      <p><strong>Keep a way back in.</strong> Before changing logon rights, export the current policy and keep a local administrator plus console access. If the only account allowed to sign in is a domain account and the domain is unreachable, the PC is locked out.</p>
+    </div>
+    <pre><code>secedit /export /cfg C:\Windows\Temp\secpol-before.inf</code></pre>
+    <p>Create <code>C:\Windows\Temp\office-rights.inf</code> with these rights. <code>*S-1-5-32-544</code> is the local Administrators group; the group name is the local group created above.</p>
+    <pre><code>[Unicode]
+Unicode=yes
+[Version]
+signature="$CHICAGO$"
+Revision=1
+[Privilege Rights]
+SeInteractiveLogonRight = *S-1-5-32-544,Office PC Users
+SeRemoteInteractiveLogonRight = *S-1-5-32-544,Office PC Users
+SeNetworkLogonRight = *S-1-5-32-544,Office PC Users</code></pre>
+    <pre><code>secedit /configure /db C:\Windows\Temp\secedit.sdb /cfg C:\Windows\Temp\office-rights.inf /areas USER_RIGHTS
+gpupdate /force</code></pre>
+    <div class="td-warn">
+      <p><strong>Do not leave out <code>SeNetworkLogonRight</code>.</strong> SSH signs in as a <em>network</em> logon. With only the interactive and Remote Desktop rights, a correct key is still answered with <code>Permission denied (publickey)</code> — the exact failure this lab hit. The safe set is all three rights for the same two principals.</p>
+    </div>
+    <h3>Roll back</h3>
+    <pre><code>secedit /configure /db C:\Windows\Temp\secedit.sdb /cfg C:\Windows\Temp\secpol-before.inf /areas USER_RIGHTS</code></pre>
+  </section>
+
+  <section id="verify">
+    <h2>Verify</h2>
+    <ol>
+      <li>Sign in at the console and over Remote Desktop as <code>THESSLEYLAB\martin</code>: both must work, and the session must be an ordinary user, not an administrator.</li>
+      <li>From another computer: <code>ssh -i &lt;key&gt; martin@office1</code> must open a shell with the same standard-user token.</li>
+      <li>An account that is in neither <code>Administrators</code> nor <code>Office PC Users</code> must be refused for all three.</li>
+      <li>Reboot and repeat: the rights are local policy and must survive a restart.</li>
+    </ol>
+  </section>
+
+  <section id="troubleshooting">
+    <h2>If it goes wrong</h2>
+    <div class="td-card">
+      <h3>The passkey tile says “Approval failed or expired”</h3>
+      <p>The computer cannot reach the AD service. Check it on the domain controller: <code>sc.exe query ThessleyADApi</code>. A “1060: the specified service does not exist” answer means the AD service is not installed on that DC (a freshly rebuilt DC has none); install it from the <a href="?page_id=114">AD service guide</a> before testing passkey sign-in.</p>
+    </div>
+    <div class="td-card">
+      <h3>SSH answers “Permission denied (publickey)” with a key that works elsewhere</h3>
+      <p>Check, in this order: the key is in the right profile (a domain user needs one sign-in to create it), the <code>Match Group administrators</code> block, the ACLs on <code>.ssh</code> and <code>authorized_keys</code>, and <code>SeNetworkLogonRight</code> for the account’s groups.</p>
+    </div>
+    <div class="td-card">
+      <h3>“The trust relationship between this workstation and the primary domain failed”</h3>
+      <p>Sign in with the local break-glass administrator and reset the machine password, then reboot:</p>
+      <pre><code>Reset-ComputerMachinePassword -Server THESSLEY-DC1 -Credential (Get-Credential THESSLEYLAB\Administrator)</code></pre>
+    </div>
+    <div class="td-card">
+      <h3>SSH is slow or times out right after boot</h3>
+      <p>sshd resolves the domain account at logon. Until DNS and the domain controller answer, the banner can take seconds or the attempt can time out. Wait for the DC, then retry before changing anything.</p>
+    </div>
+  </section>
+
+  <section id="links">
+    <h2>Related guides</h2>
+    <p><a href="?page_id=16">All downloads</a> · <a href="?page_id=43">Thessley Windows agent installation</a> · <a href="?page_id=42">Ubuntu / Linux installation</a> · <a href="?page_id=114">AD service installation</a></p>
+  </section>
+</main>
+<script>
+(() => {
+  document.querySelectorAll('.thessley-downloads pre').forEach((pre) => {
+    const code = pre.querySelector('code');
+    if (!code) return;
+    let button = pre.querySelector('.td-copy');
+    if (!button) {
+      button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'td-copy';
+      button.setAttribute('aria-label', 'Copy command');
+      button.title = 'Copy command';
+      button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"></path></svg><span class="td-copy-label">Copy</span>';
+      pre.appendChild(button);
+    }
+    button.addEventListener('click', async () => {
+      const text = code.textContent.replace(/\n+$/, '');
+      try {
+        let copied = false;
+        if (navigator.clipboard && window.isSecureContext) {
+          try {
+            await navigator.clipboard.writeText(text);
+            copied = true;
+          } catch (error) {
+            // Fall back for browsers that expose the API but deny clipboard access.
+          }
+        }
+        if (!copied) {
+          const field = document.createElement('textarea');
+          field.value = text;
+          field.setAttribute('readonly', '');
+          field.style.position = 'fixed';
+          field.style.opacity = '0';
+          field.style.fontSize = '16px';
+          document.body.appendChild(field);
+          field.focus();
+          field.select();
+          copied = document.execCommand('copy');
+          field.remove();
+          if (!copied) throw new Error('Copy failed');
+        }
+        button.setAttribute('aria-label', 'Copied');
+        button.title = 'Copied';
+        button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg><span class="td-copy-label">Copied</span>';
+        window.setTimeout(() => {
+          button.setAttribute('aria-label', 'Copy command');
+          button.title = 'Copy command';
+          button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"></path></svg><span class="td-copy-label">Copy</span>';
+        }, 1600);
+      } catch (error) {
+        button.setAttribute('aria-label', 'Copy failed; select the command manually');
+        button.title = 'Copy failed; select the command manually';
+      }
+    });
+  });
+})();
+</script>
+<!-- /wp:html -->
+
+
