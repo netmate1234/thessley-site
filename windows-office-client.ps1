@@ -9,12 +9,17 @@
   backup-<timestamp>, and -Rollback restores the newest backup.
 
 .PARAMETER User
-  The account that may sign in at this PC, for example THESSLEYLAB\martin.
+  The account that may sign in at this PC, for example CONTOSO\alice.
   It must have signed in once, so its profile exists.
 
 .PARAMETER Key
   One ssh-ed25519 / ssh-rsa public key. If omitted, the clipboard is used
   when it holds a key, otherwise you are prompted for one.
+
+.PARAMETER KeyUrl
+  Fetch the public key from an HTTPS URL instead, for example
+  https://github.com/alice.keys. Paste a URL at the prompt and it does the
+  same thing.
 
 .PARAMETER Group
   Local group allowed to sign in. Default: Office PC Users.
@@ -40,15 +45,19 @@
   Restore sshd_config and the logon rights from the newest backup, then exit.
 
 .EXAMPLE
-  .\windows-office-client.ps1 -User 'THESSLEYLAB\martin'
+  .\windows-office-client.ps1 -User 'CONTOSO\alice'
 
 .EXAMPLE
-  .\windows-office-client.ps1 -User 'THESSLEYLAB\martin' -Rollback
+  .\windows-office-client.ps1 -User 'CONTOSO\alice' -KeyUrl https://github.com/alice.keys
+
+.EXAMPLE
+  .\windows-office-client.ps1 -User 'CONTOSO\alice' -Rollback
 #>
 [CmdletBinding()]
 param(
     [string] $User,
     [string] $Key,
+    [string] $KeyUrl,
     [string] $Group = 'Office PC Users',
     [switch] $KeepPasswordAuth,
     [switch] $SkipSsh,
@@ -101,6 +110,19 @@ function Test-IsAdminAccount([string] $Account) {
     }
 }
 
+function Resolve-Key([string] $Value) {
+    $value = $Value.Trim()
+    if ($value -match '^https?://') {
+        $body = Invoke-RestMethod -Uri $value -UseBasicParsing
+        return (($body -split "`n") | Where-Object { $_.Trim() } | Select-Object -First 1).Trim()
+    }
+    if ($value -match '^[A-Za-z]:\\' -or $value.StartsWith('\\\\')) {
+        return ((Get-Content -LiteralPath $value -Raw) -split "`n" |
+            Where-Object { $_.Trim() } | Select-Object -First 1).Trim()
+    }
+    return $value
+}
+
 function Restore-Backup {
     if (-not (Test-Path $root)) { throw "No backups under $root." }
     $latest = Get-ChildItem $root -Directory -Filter 'backup-*' |
@@ -133,7 +155,7 @@ New-Item -ItemType Directory -Force -Path $backup | Out-Null
 
 if (-not $SkipSsh -or -not $SkipLogonModel) {
     if (-not $User) {
-        $User = Read-Host 'Account that may sign in, for example THESSLEYLAB\martin'
+        $User = Read-Host 'Account that may sign in, for example CONTOSO\alice'
     }
     if ([string]::IsNullOrWhiteSpace($User)) { throw 'No account given.' }
 }
@@ -176,15 +198,19 @@ if (-not $SkipSsh) {
     }
 
     # --- The key ----------------------------------------------------------
+    if (-not $Key -and $KeyUrl) {
+        $Key = $KeyUrl
+    }
     if (-not $Key) {
         $clip = Get-Clipboard -Raw -ErrorAction SilentlyContinue
         if ($clip -and $clip -match '^\s*(ssh-ed25519|ssh-rsa|ecdsa-sha2-\S+)\s+') {
             $Key = $clip.Trim()
             Write-Host 'Using the public key from the clipboard.'
         } else {
-            $Key = (Read-Host 'Paste the public key (ssh-ed25519 AAAA...), or press Enter to skip').Trim()
+            $Key = (Read-Host 'Paste the public key, a URL that serves it, or a file path (Enter to skip)').Trim()
         }
     }
+    if ($Key) { $Key = Resolve-Key $Key }
     if ($Key -match '^\s*(ssh-ed25519|ssh-rsa|ecdsa-sha2-\S+)\s+') {
         $Key = $Key.Trim()
         $existing = if (Test-Path $target) { Get-Content $target -Raw } else { '' }

@@ -53,12 +53,13 @@
     <h2>Guided install</h2>
     <p>Copy the public key to the clipboard, open an elevated PowerShell window, and run:</p>
     <pre><code>irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1 | iex</code></pre>
+    <p>No key on the clipboard? Paste a URL that serves it (for example <code>https://github.com/alice.keys</code>) at the prompt instead.</p>
     <p>It asks which account may sign in, then does everything: OpenSSH server, the key, key-only sign-in, and the logon model. No execution-policy change is needed.</p>
     <p>To test SSH before touching the logon rights, run the two steps separately:</p>
     <pre><code>&amp; ([scriptblock]::Create((irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1))) -SshOnly</code></pre>
     <pre><code>&amp; ([scriptblock]::Create((irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1))) -LogonModelOnly</code></pre>
-    <p>Options: <code>-User 'CONTOSO\alice'</code> · <code>-KeepPasswordAuth</code> · <code>-Group 'Office PC Users'</code> · <code>-Rollback</code>.</p>
-    <p>Anything replaced is copied to <code>C:\ProgramData\ThessleyOffice\backup-&lt;timestamp&gt;</code> first.</p>
+    <p>Options: <code>-User 'CONTOSO\alice'</code> · <code>-KeyUrl https://github.com/alice.keys</code> · <code>-KeepPasswordAuth</code> · <code>-Group 'Office PC Users'</code> · <code>-Rollback</code>.</p>
+    <p>Anything replaced is copied to <code>C:\ProgramData\ThessleyOffice\backup-&lt;timestamp&gt;</code> first. The <a href="https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/SHA256SUMS.txt">SHA-256 checksums</a> cover the installer if you want to verify it first.</p>
   </section>
 
   <details>
