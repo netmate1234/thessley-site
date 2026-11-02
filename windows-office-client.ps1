@@ -99,7 +99,10 @@ function Resolve-Account([string] $Name) {
     # Accept DOMAIN\user (NetBIOS), user@domain (UPN) and a bare user name,
     # and return the canonical DOMAIN\user that icacls and the local groups use.
     $candidates = @($Name)
-    if ($Name -match '^([^\\]+)\\(.+)$') {
+    if ($Name -match '^\.\\(.+)$') {
+        # '.\user' is shorthand: .NET wants MACHINE\user.
+        $candidates += ($env:COMPUTERNAME + '\' + $Matches[1])
+    } elseif ($Name -match '^([^\\]+)\\(.+)$') {
         $candidates += ('{0}@{1}' -f $Matches[2], $Matches[1])
     } else {
         $candidates += ('.\' + $Name)
