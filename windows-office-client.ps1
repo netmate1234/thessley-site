@@ -283,7 +283,6 @@ if (-not $SkipSsh) {
         $sshDir = Join-Path $profilePath '.ssh'
         New-Item -ItemType Directory -Force -Path $sshDir | Out-Null
         $target = Join-Path $sshDir 'authorized_keys'
-        & icacls.exe $sshDir /inheritance:r /grant "${User}:(OI)(CI)F" /grant 'SYSTEM:(OI)(CI)F' | Out-Null
     }
 
     # --- The key ----------------------------------------------------------
@@ -314,7 +313,12 @@ if (-not $SkipSsh) {
         if ($existing -notmatch [regex]::Escape(($Key -split '\s+')[1])) {
             Add-Content -LiteralPath $target -Value $Key
         }
+        # Tighten the ACLs only after the key is written: removing inheritance on
+        # .ssh first would lock the elevated installer out of its own file.
         & icacls.exe $target /inheritance:r /grant "${User}:F" /grant 'SYSTEM:F' | Out-Null
+        if ($sshDir) {
+            & icacls.exe $sshDir /inheritance:r /grant "${User}:(OI)(CI)F" /grant 'SYSTEM:(OI)(CI)F' | Out-Null
+        }
         $keyInstalled = $true
         Write-Host "Key installed for $User."
     } elseif ($Key) {
