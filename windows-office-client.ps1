@@ -193,7 +193,10 @@ if (-not $SkipSsh -or -not $SkipLogonModel) {
         throw
     }
     try {
-        Set-CimInstance -InputObject $computer -Property @{ Description = "Thessley office PC for $User" }
+        # Win32_ComputerSystem.Description is read-only; the text Explorer and
+        # 'net view' show as the computer description lives here instead.
+        Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters' `
+            -Name 'srvcomment' -Value "Thessley office PC for $User" -Type String -ErrorAction Stop
         Write-Host "This computer is for $User."
     } catch {
         Write-Warning "Could not set the computer description: $($_.Exception.Message)"
