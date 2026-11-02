@@ -23,6 +23,13 @@
   Leave PasswordAuthentication as it is (by default it is turned off once
   a key is installed).
 
+.PARAMETER SshOnly
+  Install OpenSSH, the key and key-only sign-in only; leave the logon
+  model for a later run.
+
+.PARAMETER LogonModelOnly
+  Create the group and the logon rights only; leave OpenSSH alone.
+
 .PARAMETER SkipSsh
   Do not touch OpenSSH or the key. Useful when only the logon model changes.
 
@@ -46,8 +53,13 @@ param(
     [switch] $KeepPasswordAuth,
     [switch] $SkipSsh,
     [switch] $SkipLogonModel,
+    [switch] $SshOnly,
+    [switch] $LogonModelOnly,
     [switch] $Rollback
 )
+
+if ($SshOnly) { $SkipLogonModel = $true }
+if ($LogonModelOnly) { $SkipSsh = $true }
 
 $ErrorActionPreference = 'Stop'
 $root = Join-Path $env:ProgramData 'ThessleyOffice'

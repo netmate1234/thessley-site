@@ -66,29 +66,37 @@
 
   <section id="guided">
     <h2>Guided install</h2>
-    <p>Copy the account’s public key to the clipboard, open an elevated PowerShell window, and run this line. Replace the account if you are setting up someone other than <code>THESSLEYLAB\martin</code>. The installer verifies its own checksum before it runs.</p>
+    <p>Three short steps in an elevated PowerShell window. Each step can be repeated on its own: OpenSSH first, the logon model afterwards.</p>
+
+    <h3>Step 1 — Download and verify the installer</h3>
     <pre><code>$u='https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1'; $f="$env:TEMP\thessley-office.ps1"; irm $u -OutFile $f
-if((Get-FileHash $f -Algorithm SHA256).Hash -ne '5ac3fa9b6402624944488cca3ef5521d6cf2332f9d6a082103c547604cae6a9b'){throw 'checksum mismatch'}
-powershell -NoProfile -ExecutionPolicy Bypass -File $f -User 'THESSLEYLAB\martin'</code></pre>
-    <p>It asks nothing else: the key comes from the clipboard, and anything it replaces is copied to <code>C:\ProgramData\ThessleyOffice\backup-&lt;timestamp&gt;</code> first.</p>
+if((Get-FileHash $f -Algorithm SHA256).Hash -ne 'a964497de9b0643713dc443382b12a7b319c057de0dcb918572f1e6b7c3063be'){throw 'checksum mismatch'}</code></pre>
+
+    <h3>Step 2 — OpenSSH server and the key</h3>
+    <p>Copy the account’s public key to the clipboard first; the installer takes it from there. Replace the account if you are setting up someone other than <code>THESSLEYLAB\martin</code>.</p>
+    <pre><code>powershell -NoProfile -ExecutionPolicy Bypass -File $f -User 'THESSLEYLAB\martin' -SshOnly</code></pre>
+    <p>This installs the <strong>OpenSSH Server</strong> capability if needed, starts <code>sshd</code> at boot, opens TCP 22, adds the key with the ACLs Windows sshd requires, sets <code>PubkeyAuthentication yes</code> and turns password sign-in off. It runs <code>sshd -t</code> and restores the old file if the configuration is rejected.</p>
+    <p><strong>Test it before step 3:</strong> from another computer, <code>ssh -i &lt;key&gt; martin@&lt;host&gt;</code>. Do not move on until the key works.</p>
+
+    <h3>Step 3 — The office logon model</h3>
+    <p>Now that SSH works, restrict sign-in to administrators and the office group. This is the step that can lock the machine, so keep the console open.</p>
+    <pre><code>powershell -NoProfile -ExecutionPolicy Bypass -File $f -User 'THESSLEYLAB\martin' -LogonModelOnly</code></pre>
+    <p>It creates the local group <strong>Office PC Users</strong>, adds the account, and allows only <code>Administrators</code> and that group to sign in locally, over Remote Desktop and over the network. All three rights matter: without the network right, SSH refuses a correct key.</p>
+
     <div class="td-card">
-      <h3>What it does</h3>
-      <ul>
-        <li>Installs the <strong>OpenSSH Server</strong> capability if it is missing, starts <code>sshd</code> at boot and opens TCP 22 in the firewall.</li>
-        <li>Adds the clipboard key to the right place: the account’s own <code>.ssh\authorized_keys</code>, or <code>administrators_authorized_keys</code> for an administrator, with the strict ACLs Windows sshd requires.</li>
-        <li>Sets <code>PubkeyAuthentication yes</code> and, once a key is in place, <code>PasswordAuthentication no</code>. It runs <code>sshd -t</code> and restores the old file if the configuration is rejected.</li>
-        <li>Creates the local group <strong>Office PC Users</strong>, adds the account, and allows only <code>Administrators</code> and that group to sign in locally, over Remote Desktop and over the network. All three rights matter: without the network right, SSH refuses a correct key.</li>
-      </ul>
+      <h3>Both steps at once</h3>
+      <p>On a fresh machine, drop the switch and run everything in one go:</p>
+      <pre><code>powershell -NoProfile -ExecutionPolicy Bypass -File $f -User 'THESSLEYLAB\martin'</code></pre>
+      <p>Anything the installer replaces is copied to <code>C:\ProgramData\ThessleyOffice\backup-&lt;timestamp&gt;</code> first.</p>
     </div>
-    <p>Common variations:</p>
+
+    <p>Other options:</p>
     <ul>
-      <li><code>-SkipSsh</code> — leave OpenSSH untouched (logon model only).</li>
-      <li><code>-SkipLogonModel</code> — set up SSH only.</li>
       <li><code>-KeepPasswordAuth</code> — keep password sign-in alongside the key.</li>
       <li><code>-Group 'Office PC Users'</code> — use a different local group.</li>
+      <li><code>-Rollback</code> — restore the saved <code>sshd_config</code> and logon rights; sign out and in again afterwards.</li>
     </ul>
-    <p>To undo, run the same script with <code>-Rollback</code> from an elevated window. It restores the saved <code>sshd_config</code> and logon rights; sign out and in again to refresh the token.</p>
-    <pre><code>powershell -NoProfile -ExecutionPolicy Bypass -File "$env:TEMP\thessley-office.ps1" -Rollback</code></pre>
+    <pre><code>powershell -NoProfile -ExecutionPolicy Bypass -File $f -Rollback</code></pre>
   </section>
 
   <details>
