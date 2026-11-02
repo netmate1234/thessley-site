@@ -43,7 +43,7 @@
     <div class="td-card">
       <ul>
         <li>Windows 11 <strong>Pro, Enterprise or Education</strong>, installed and joined to the domain (Home cannot join a domain or host RDP). The installer refuses an AD user on an unjoined PC.</li>
-        <li>An elevated PowerShell window, the account signed in once, and its public key on the clipboard.</li>
+        <li>An elevated PowerShell window, the account signed in once, and its public key (clipboard, a <code>.pub</code> file, or a URL).</li>
         <li>A local break-glass administrator you can still use if the domain is unreachable.</li>
       </ul>
     </div>
@@ -53,7 +53,8 @@
     <h2>Guided install</h2>
     <div class="td-card">
       <h3>One-user workstation</h3>
-      <p>Run <code>irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1 | iex</code> in an elevated window and press Enter. It uses the account signed in at this PC, takes a <code>.pub</code> key already in that profile (or the clipboard), and does the key and logon model in one go.</p>
+      <pre><code>irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1 | iex</code></pre>
+      <p>Press Enter at the question. It uses the account signed in at this PC, takes a <code>.pub</code> key already in that profile (or the clipboard), and does the key and logon model in one go.</p>
     </div>
     <p>Everything below is the same thing in steps, for a PC that is not a plain one-user workstation.</p>
 
