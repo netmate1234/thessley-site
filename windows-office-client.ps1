@@ -101,6 +101,9 @@ function Resolve-Account([string] $Name) {
     $candidates = @($Name)
     if ($Name -match '^([^\\]+)\\(.+)$') {
         $candidates += ('{0}@{1}' -f $Matches[2], $Matches[1])
+    } else {
+        $candidates += ('.\' + $Name)
+        $candidates += ($env:COMPUTERNAME + '\' + $Name)
     }
     foreach ($candidate in $candidates) {
         try {
@@ -175,15 +178,20 @@ if ($Rollback) {
 New-Item -ItemType Directory -Force -Path $backup | Out-Null
 
 if (-not $SkipSsh -or -not $SkipLogonModel) {
+    $computer = Get-CimInstance -ClassName Win32_ComputerSystem
+    if (-not $User) { $User = $computer.UserName }   # the user signed in at this workstation
     if (-not $User) {
-        $User = Read-Host 'Which AD user is this computer for? (DOMAIN\user or user@domain; .\localuser for a local account)'
+        $User = Read-Host 'Which user is this computer for? (DOMAIN\user, user@domain, or .\localuser)'
     }
     if ([string]::IsNullOrWhiteSpace($User)) { throw 'No user given.' }
-    $computer = Get-CimInstance -ClassName Win32_ComputerSystem
-    if (-not $computer.PartOfDomain -and $User -notmatch '^\.\\') {
-        throw "This computer is not joined to a domain ($($computer.Domain)). Join it first, or pass a local account such as '.\martin'."
+    try {
+        $User = Resolve-Account $User
+    } catch {
+        if (-not $computer.PartOfDomain) {
+            throw "This computer is not joined to a domain. Use a local account such as '.\$env:USERNAME', or join the domain first."
+        }
+        throw
     }
-    $User = Resolve-Account $User
     try {
         Set-CimInstance -InputObject $computer -Property @{ Description = "Thessley office PC for $User" }
         Write-Host "This computer is for $User."
@@ -208,6 +216,7 @@ if (-not $SkipSsh) {
     # --- Where does this account's key go? --------------------------------
     $isAdmin = Test-IsAdminAccount $User
     $target = $null
+    $sshDir = $null
     if ($isAdmin) {
         # sshd's default "Match Group administrators" block sends administrator
         # keys to this shared file, not to the profile.
@@ -225,6 +234,14 @@ if (-not $SkipSsh) {
     }
 
     # --- The key ----------------------------------------------------------
+    if (-not $Key -and -not $KeyUrl -and $sshDir) {
+        $existingPub = Get-ChildItem -Path $sshDir -Filter '*.pub' -ErrorAction SilentlyContinue |
+            Select-Object -First 1
+        if ($existingPub) {
+            $Key = (Get-Content -LiteralPath $existingPub.FullName -Raw).Trim()
+            Write-Host "Using $($existingPub.Name) from this PC."
+        }
+    }
     if (-not $Key -and $KeyUrl) {
         $Key = $KeyUrl
     }
