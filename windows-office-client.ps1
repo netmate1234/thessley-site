@@ -176,10 +176,17 @@ New-Item -ItemType Directory -Force -Path $backup | Out-Null
 
 if (-not $SkipSsh -or -not $SkipLogonModel) {
     if (-not $User) {
-        $User = Read-Host 'Account that may sign in, for example CONTOSO\alice'
+        $User = Read-Host 'Which user is this computer for? (DOMAIN\user, user@domain, or .\localuser)'
     }
-    if ([string]::IsNullOrWhiteSpace($User)) { throw 'No account given.' }
+    if ([string]::IsNullOrWhiteSpace($User)) { throw 'No user given.' }
     $User = Resolve-Account $User
+    try {
+        $computer = Get-CimInstance -ClassName Win32_ComputerSystem
+        Set-CimInstance -InputObject $computer -Property @{ Description = "Thessley office PC for $User" }
+        Write-Host "This computer is for $User."
+    } catch {
+        Write-Warning "Could not set the computer description: $($_.Exception.Message)"
+    }
 }
 
 $sshChanged = $false

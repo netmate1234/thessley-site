@@ -66,7 +66,7 @@ if (-not (Get-NetFirewallRule -Name OpenSSH-Server-In-TCP -ErrorAction SilentlyC
 (Test-NetConnection localhost -Port 22).TcpTestSucceeded</code></pre>
 
     <h3>Step 2 — Add the key</h3>
-    <p>Copy the account’s public key first, or paste a URL that serves it (for example <code>https://github.com/alice.keys</code>) at the prompt.</p>
+    <p>Copy the account’s public key first, or paste a URL that serves it (for example <code>https://github.com/alice.keys</code>) at the prompt. The installer asks which user this computer is for and records it as the computer description.</p>
     <pre><code>&amp; ([scriptblock]::Create((irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1))) -SshOnly</code></pre>
     <p>No key yet? The normal exchange is two commands on the computer you connect <em>from</em>:</p>
     <pre><code>ssh-keygen -t ed25519 -C "alice@laptop"
