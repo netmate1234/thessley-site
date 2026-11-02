@@ -34,7 +34,7 @@
   <section class="td-hero">
     <p class="td-kicker">Thessley computer installation</p>
     <h1>Windows 11 Pro office client</h1>
-    <p>A clean Pro install for the office logon test: UEFI with TPM 2.0, domain join, OpenSSH with key sign-in, and the <strong>Office PC Users</strong> logon model.</p>
+    <p>OpenSSH with key-only sign-in and the <strong>Office PC Users</strong> logon model on an already installed, domain-joined Windows 11 Pro machine.</p>
     <p><a href="?page_id=16">All downloads</a> · <a href="?page_id=43">Thessley Windows agent</a> · <a href="?page_id=42">Ubuntu / Linux installation</a> · <a href="?page_id=114">AD service installation</a></p>
   </section>
 
@@ -48,53 +48,11 @@
     <div class="td-card">
       <h3>The installation media</h3>
       <p>Download the Windows 11 ISO from Microsoft’s <a href="https://www.microsoft.com/software-download/windows11">software download page</a> and check its SHA-256 against the value Microsoft publishes for that build. A volume-licence ISO from your own agreement works the same way.</p>
-      <p>On this lab host the ISO is already installed as <code>/var/lib/libvirt/images/windows-pro-install.iso</code> (about 7.2 GB). Reuse it instead of downloading another copy, and keep the matching virtio driver ISO (<code>virtio-tools.iso</code>) next to it for the disk driver and guest tools.</p>
+      <p>Install Windows, run Windows Update, and join the machine to <code>lab.thessley.test</code> with an account that may join workstations before continuing. Keep a local break-glass administrator.</p>
     </div>
     <div class="td-warn">
-      <p><strong>Licensing.</strong> This guide only installs the operating system. Activation is your responsibility: retail, volume or evaluation media must match the licence you hold, and the lab network should stay isolated from production while the weak test passwords from the lab notes are in use.</p>
+      <p><strong>Licensing.</strong> This guide starts after Windows is installed. Activation is your responsibility: retail, volume or evaluation media must match the licence you hold, and the lab network should stay isolated from production while the weak test passwords from the lab notes are in use.</p>
     </div>
-  </section>
-
-  <section id="create-vm">
-    <h2>Create the virtual machine</h2>
-    <p>Run this on the lab host. Adjust the name, disk path and memory for your host; the shape (q35, UEFI, TPM 2.0, virtio disk and network) is what matters.</p>
-    <pre><code>sudo virt-install \
-  --name office-client \
-  --osinfo win11 \
-  --memory 4096 --vcpus 2 \
-  --machine q35 --boot uefi,secure=on \
-  --tpm backend.type=emulator,backend.version=2.0 \
-  --disk path=/var/lib/libvirt/images/office-client.qcow2,size=60,format=qcow2,bus=virtio \
-  --cdrom /var/lib/libvirt/images/windows-pro-install.iso \
-  --disk path=/var/lib/libvirt/images/virtio-tools.iso,device=cdrom \
-  --network network=default,model=virtio \
-  --graphics spice,listen=127.0.0.1 \
-  --video qxl \
-  --noautoconsole</code></pre>
-    <p>If libvirt rejects <code>--boot uefi,secure=on</code>, install the OVMF Secure Boot firmware (<code>ovmf</code> package) or drop <code>,secure=on</code>; the TPM still works without Secure Boot, but Windows 11 Setup may ask you to acknowledge the requirement.</p>
-  </section>
-
-  <section id="install-windows">
-    <h2>Install Windows</h2>
-    <ol>
-      <li>Connect to the console (<code>virt-viewer -c qemu:///system office-client</code>), boot the ISO, and choose <strong>Custom: Install Windows only</strong>.</li>
-      <li>If Setup shows no disk, choose <strong>Load driver</strong> and pick <code>amd64\w11\viostor.inf</code> (or <code>vioscsi.inf</code>) from the virtio ISO. The disk then appears.</li>
-      <li>Select <strong>Windows 11 Pro</strong> and install to the whole disk.</li>
-      <li>At the network/account step, create a <strong>local break-glass administrator</strong> rather than tying the machine to a Microsoft account. On current builds press <strong>Shift+F10</strong> and run <code>start ms-cxh:localonly</code>; on older builds you can use <code>oobe\bypassnro</code>. The break-glass account is what gets you back in if domain sign-in or a logon policy goes wrong.</li>
-      <li>Install the guest tools from the virtio ISO (<code>virtio-win-guest-tools.exe</code>) for display, clipboard and ballooning, then reboot.</li>
-      <li>Run Windows Update, set the time zone, and confirm the clock is correct. Phone approvals are time-sensitive.</li>
-    </ol>
-    <pre><code>Set-TimeZone -Id "W. Europe Standard Time"
-w32tm /resync</code></pre>
-  </section>
-
-  <section id="domain-join">
-    <h2>Join the domain</h2>
-    <p>Name the computer before joining, then use a domain account that may join workstations. The restart is required.</p>
-    <pre><code>Rename-Computer -NewName OFFICE1 -Restart</code></pre>
-    <pre><code>Add-Computer -DomainName lab.thessley.test -Credential (Get-Credential THESSLEYLAB\Administrator) -Restart</code></pre>
-    <p>After the restart, sign in once with the domain account you will use for the test so its profile exists, then confirm the secure channel:</p>
-    <pre><code>Test-ComputerSecureChannel -Verbose</code></pre>
   </section>
 
   <section id="sshd">

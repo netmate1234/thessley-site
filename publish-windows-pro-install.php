@@ -20,7 +20,18 @@ if ( ! $parent ) {
 	throw new RuntimeException( 'Could not find the Downloads parent page.' );
 }
 
-$page = get_page_by_path( 'windows-pro-installation', OBJECT, 'page' );
+$page = get_page_by_path( 'downloads/windows-pro-installation', OBJECT, 'page' );
+if ( ! $page ) {
+	$found = get_posts(
+		array(
+			'post_type'      => 'page',
+			'name'           => 'windows-pro-installation',
+			'post_status'    => 'any',
+			'posts_per_page' => 1,
+		)
+	);
+	$page = $found ? $found[0] : null;
+}
 
 $data = array(
 	'post_title'   => 'Windows 11 Pro Office Client',
