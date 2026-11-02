@@ -34,7 +34,7 @@
   <section class="td-hero">
     <p class="td-kicker">Thessley computer installation</p>
     <h1>Windows 11 Pro office client</h1>
-    <p>OpenSSH with key-only sign-in and the <strong>Office PC Users</strong> logon model on an already installed, domain-joined Windows 11 Pro machine.</p>
+    <p>One elevated PowerShell command installs OpenSSH, adds your key and applies the <strong>Office PC Users</strong> logon model on an installed, domain-joined Windows 11 Pro machine.</p>
     <p><a href="?page_id=16">All downloads</a> · <a href="?page_id=43">Thessley Windows agent</a> · <a href="?page_id=42">Ubuntu / Linux installation</a> · <a href="?page_id=114">AD service installation</a></p>
   </section>
 
@@ -50,11 +50,47 @@
       <p>Download the Windows 11 ISO from Microsoft’s <a href="https://www.microsoft.com/software-download/windows11">software download page</a> and check its SHA-256 against the value Microsoft publishes for that build. A volume-licence ISO from your own agreement works the same way.</p>
       <p>Install Windows, run Windows Update, and join the machine to <code>lab.thessley.test</code> with an account that may join workstations before continuing. Keep a local break-glass administrator.</p>
     </div>
+    <div class="td-card">
+      <h3>Before you start</h3>
+      <ul>
+        <li>An <strong>elevated</strong> PowerShell window (Run as administrator).</li>
+        <li>The account has signed in <strong>once</strong>, so its profile exists.</li>
+        <li>Its public key on the clipboard (the installer reads it from there).</li>
+        <li>A local break-glass administrator you can still use if the domain is unreachable.</li>
+      </ul>
+    </div>
     <div class="td-warn">
       <p><strong>Licensing.</strong> This guide starts after Windows is installed. Activation is your responsibility: retail, volume or evaluation media must match the licence you hold, and the lab network should stay isolated from production while the weak test passwords from the lab notes are in use.</p>
     </div>
   </section>
 
+  <section id="guided">
+    <h2>Guided install</h2>
+    <p>Copy the account’s public key to the clipboard, open an elevated PowerShell window, and run this line. Replace the account if you are setting up someone other than <code>THESSLEYLAB\martin</code>. The installer verifies its own checksum before it runs.</p>
+    <pre><code>$u='https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1'; $f="$env:TEMP\thessley-office.ps1"; irm $u -OutFile $f; if((Get-FileHash $f -Algorithm SHA256).Hash -ne '5ac3fa9b6402624944488cca3ef5521d6cf2332f9d6a082103c547604cae6a9b'){throw 'checksum mismatch'}; & $f -User 'THESSLEYLAB\martin'</code></pre>
+    <p>It asks nothing else: the key comes from the clipboard, and anything it replaces is copied to <code>C:\ProgramData\ThessleyOffice\backup-&lt;timestamp&gt;</code> first.</p>
+    <div class="td-card">
+      <h3>What it does</h3>
+      <ul>
+        <li>Installs the <strong>OpenSSH Server</strong> capability if it is missing, starts <code>sshd</code> at boot and opens TCP 22 in the firewall.</li>
+        <li>Adds the clipboard key to the right place: the account’s own <code>.ssh\authorized_keys</code>, or <code>administrators_authorized_keys</code> for an administrator, with the strict ACLs Windows sshd requires.</li>
+        <li>Sets <code>PubkeyAuthentication yes</code> and, once a key is in place, <code>PasswordAuthentication no</code>. It runs <code>sshd -t</code> and restores the old file if the configuration is rejected.</li>
+        <li>Creates the local group <strong>Office PC Users</strong>, adds the account, and allows only <code>Administrators</code> and that group to sign in locally, over Remote Desktop and over the network. All three rights matter: without the network right, SSH refuses a correct key.</li>
+      </ul>
+    </div>
+    <p>Common variations:</p>
+    <ul>
+      <li><code>-SkipSsh</code> — leave OpenSSH untouched (logon model only).</li>
+      <li><code>-SkipLogonModel</code> — set up SSH only.</li>
+      <li><code>-KeepPasswordAuth</code> — keep password sign-in alongside the key.</li>
+      <li><code>-Group 'Office PC Users'</code> — use a different local group.</li>
+    </ul>
+    <p>To undo, run the same script with <code>-Rollback</code> from an elevated window. It restores the saved <code>sshd_config</code> and logon rights; sign out and in again to refresh the token.</p>
+    <pre><code>&amp; "$env:TEMP\thessley-office.ps1" -Rollback</code></pre>
+  </section>
+
+  <details>
+    <summary>Manual steps (what the installer does)</summary>
   <section id="sshd">
     <h2>Install OpenSSH Server</h2>
     <p>Windows ships OpenSSH as a capability. Install the server, start it at boot, and open only TCP 22.</p>
@@ -110,6 +146,7 @@ gpupdate /force</code></pre>
     <h3>Roll back</h3>
     <pre><code>secedit /configure /db C:\Windows\Temp\secedit.sdb /cfg C:\Windows\Temp\secpol-before.inf /areas USER_RIGHTS</code></pre>
   </section>
+  </details>
 
   <section id="verify">
     <h2>Verify</h2>
