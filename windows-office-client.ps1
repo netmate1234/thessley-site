@@ -176,12 +176,15 @@ New-Item -ItemType Directory -Force -Path $backup | Out-Null
 
 if (-not $SkipSsh -or -not $SkipLogonModel) {
     if (-not $User) {
-        $User = Read-Host 'Which user is this computer for? (DOMAIN\user, user@domain, or .\localuser)'
+        $User = Read-Host 'Which AD user is this computer for? (DOMAIN\user or user@domain; .\localuser for a local account)'
     }
     if ([string]::IsNullOrWhiteSpace($User)) { throw 'No user given.' }
+    $computer = Get-CimInstance -ClassName Win32_ComputerSystem
+    if (-not $computer.PartOfDomain -and $User -notmatch '^\.\\') {
+        throw "This computer is not joined to a domain ($($computer.Domain)). Join it first, or pass a local account such as '.\martin'."
+    }
     $User = Resolve-Account $User
     try {
-        $computer = Get-CimInstance -ClassName Win32_ComputerSystem
         Set-CimInstance -InputObject $computer -Property @{ Description = "Thessley office PC for $User" }
         Write-Host "This computer is for $User."
     } catch {
