@@ -175,13 +175,14 @@ function Restore-Backup {
     Write-Host 'Rollback complete. Reboot or sign out and in again to refresh tokens.'
 }
 
-Assert-Admin
-
 if ($Check) {
     $computer = Get-CimInstance -ClassName Win32_ComputerSystem
     $sshd = Get-Service -Name sshd -ErrorAction SilentlyContinue
     $user = $computer.UserName
+    if (-not $user) { $user = "$env:USERDOMAIN\$env:USERNAME" }   # nobody at the console (SSH, lock screen)
     $profilePath = if ($user) { Get-ProfilePath $user } else { $null }
+    $dnsServers = (Get-DnsClientServerAddress -AddressFamily IPv4 |
+        ForEach-Object { "$($_.InterfaceAlias): $($_.ServerAddresses -join ', ')" }) -join '; '
     $dns = if ($Domain) { (Resolve-DnsName -Name $Domain -Type A -ErrorAction SilentlyContinue | Where-Object IPAddress) } else { $null }
     [pscustomobject]@{
         Computer       = $env:COMPUTERNAME
@@ -190,10 +191,13 @@ if ($Check) {
         SignedInUser   = $user
         UserProfile    = if ($profilePath) { 'present' } else { 'missing' }
         OpenSsh        = if ($sshd) { $sshd.Status } else { 'not installed' }
+        DnsServers     = $dnsServers
         DomainResolves = if (-not $Domain) { 'not checked' } elseif ($dns) { ($dns.IPAddress -join ', ') } else { 'NO - fix DNS first' }
     } | Format-List
     return
 }
+
+Assert-Admin
 
 if ($Domain) {
     $computer = Get-CimInstance -ClassName Win32_ComputerSystem
