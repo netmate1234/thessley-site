@@ -1,0 +1,2 @@
+WP OpSec Dev
+Modular WordPress security — block early, log everything, enforce when ready

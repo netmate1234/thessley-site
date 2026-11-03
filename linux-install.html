@@ -1,0 +1,228 @@
+<!-- wp:html -->
+<style>
+.thessley-downloads{--td-ink:#f2f6fc;--td-muted:#cad5e3;--td-blue:#1976b5;--td-line:#40516a;color:var(--td-ink);font-family:inherit;background:#0c1422;padding:clamp(1rem,3vw,2rem);border-radius:18px;color-scheme:dark}
+.thessley-downloads *{box-sizing:border-box}
+.thessley-downloads .td-hero{padding:clamp(1.8rem,5vw,3.2rem);border-radius:22px;background:linear-gradient(128deg,#102b4d,#176b9e);color:#fff}
+.thessley-downloads .td-hero .td-kicker{margin:.1rem 0 .55rem;color:#b8e4f7;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.thessley-downloads .td-hero p{max-width:65ch;color:#e4f0f7;line-height:1.65}
+.thessley-downloads section{margin:2.8rem 0}
+.thessley-downloads h2{font-size:clamp(1.55rem,3vw,2rem);color:#f5f8fc}
+.thessley-downloads h3{margin-top:1.8rem;color:#eef4fc}
+.thessley-downloads p,.thessley-downloads li{line-height:1.7;color:var(--td-muted)}
+.thessley-downloads a:not(.td-download){color:#9edaff;text-decoration:underline;text-underline-offset:.15em}
+.thessley-downloads a:not(.td-download):hover{color:#d1efff}
+.thessley-downloads .td-card{margin:1rem 0;padding:1.25rem 1.4rem;border:1px solid var(--td-line);border-radius:16px;background:#172235}
+.thessley-downloads .td-card h3{margin:.1rem 0 .4rem}
+.thessley-downloads .td-card p{margin:.45rem 0}
+.thessley-downloads .td-download{display:inline-block;margin:.45rem .7rem .25rem 0;padding:.7rem 1rem;border-radius:999px;background:#145a8d;color:#fff!important;font-weight:750;text-decoration:none}
+.thessley-downloads .td-download:hover{background:#0f456d}
+.thessley-downloads .td-warn{padding:1rem 1.2rem;border-left:4px solid #e3ad45;border-radius:0 10px 10px 0;background:#332a1b;color:#ffe6b2}
+.thessley-downloads pre{position:relative;overflow:auto;padding:3.1rem 1rem 1rem;border-radius:10px;background:#17243a;color:#f0f5f9;font-size:.9rem;line-height:1.55}
+.thessley-downloads pre code{display:block;min-width:max-content;white-space:pre;overflow-wrap:normal}
+.thessley-downloads .td-copy{position:absolute;top:.55rem;right:.6rem;display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .6rem;border:1px solid #9ab2cc;border-radius:7px;background:#314966;color:#fff;font:inherit;font-size:.78rem;cursor:pointer}
+.thessley-downloads .td-copy:hover,.thessley-downloads .td-copy:focus-visible{background:#42658a;outline:2px solid #b4e6ff;outline-offset:2px}
+.thessley-downloads .td-copy svg{width:1rem;height:1rem;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.thessley-downloads .td-copy-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.thessley-downloads :not(pre)>code{padding:.1em .3em;border-radius:4px;background:#25354b;color:#f4f7fb}
+
+.thessley-downloads .td-hero h1{margin:.2rem 0 .7rem;color:#fff;font-size:clamp(2rem,5vw,3rem)}
+.thessley-downloads details{margin:1rem 0;padding:0 1rem 1rem;border:1px solid var(--td-line);border-radius:12px;background:#121e30}
+.thessley-downloads summary{padding:1rem 0;color:#f5f8fc;font-size:1.1rem;font-weight:750;cursor:pointer}
+.thessley-downloads details[open]>summary{border-bottom:1px solid var(--td-line)}
+</style>
+<main class="thessley-downloads alignwide">
+  <section class="td-hero">
+    <p class="td-kicker">Thessley computer installation</p>
+    <h1>Ubuntu 24.04 and 26.04 Linux</h1>
+    <p>Linux SSH QR approval service, web admin, and optional OpenVPN integration.</p>
+    <p><a href="?page_id=16">All downloads</a></p>
+  </section>
+  
+  <section id="guided-install">
+    <h2>Guided one-line install</h2>
+    <p>For Ubuntu 24.04 or 26.04 LTS on amd64 or ARM64, paste this command in a terminal. It adds the signed Thessley APT repository, installs the package, and starts the wizard. The HTTPS web admin page is enabled by default; enter n to skip it. Other optional components default to No. Existing SSH/PAM and OpenVPN server configuration are not changed automatically.</p>
+    <p>Time zones are supported. The Linux source installer reports its UTC comparison as diagnostic information and continues if the clocks differ or the comparison is unavailable. Phone approvals use a short freshness window, so the computer and phone still need accurate, synchronized clocks. APT checks signed repository metadata dates before the installer runs; if <code>apt update</code> reports that a Release file is “not valid yet” or expired, sync the system clock and rerun the install command. Do not disable APT signature or date checks.</p>
+    <details>
+      <summary>Check or sync Ubuntu time if APT reports a date error</summary>
+      <pre><code>timedatectl status
+sudo timedatectl set-ntp true
+timedatectl timesync-status</code><button type="button" class="td-copy" aria-label="Copy command">Copy command</button></pre>
+    </details>
+    <pre><code>sudo install -d -m 0755 /etc/apt/keyrings &amp;&amp; curl -fsSL https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-apt/thessley-archive-keyring.gpg | sudo tee /etc/apt/keyrings/thessley-archive-keyring.gpg &gt;/dev/null &amp;&amp; sudo chmod 0644 /etc/apt/keyrings/thessley-archive-keyring.gpg &amp;&amp; echo &#x27;deb [arch=amd64,arm64 signed-by=/etc/apt/keyrings/thessley-archive-keyring.gpg] https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-apt stable main&#x27; | sudo tee /etc/apt/sources.list.d/thessley.list &gt;/dev/null &amp;&amp; sudo apt update &amp;&amp; sudo apt install -y thessley-pam-linux-installer &amp;&amp; sudo thessley-pam-install</code></pre>
+  </section>
+  <section id="openvpn-quick-install">
+    <h2>Guided OpenVPN server install</h2>
+    <p>First install the Thessley Linux service above. Then use this on a <strong>new Ubuntu 24.04 or 26.04 OpenVPN server</strong>. It verifies the installer checksum, asks for the public host, local account, tunnel subnet, LAN subnet (detected from the default-route interface when it is private, or overridden/skipped), UDP port and first client name, creates the compatible OpenVPN configuration, enrolls the phone by QR and matching code, and writes a protected client profile. Like OPI5, the CA key is unencrypted but owned by root with mode 0600 in a root-only directory, so web key creation and revocation do not ask for a CA passphrase. If migrating an older encrypted CA, first update the package, then run <code>sudo bash /opt/thessley-pam-linux/migrate-vpn-ca-unencrypted.sh</code> once; it asks for the current passphrase, preserves the same CA, and retains a root-only encrypted backup. VPN approval and OpenVPN are enabled before phone enrollment begins, so if enrollment is interrupted the Admin key controls remain available while VPN logins stay refused until a phone is associated. It refuses to overwrite an existing server config or approval service. If UFW is active, it can add only the required UDP and TCP 47830 allow rules; it does not enable UFW, change router settings, or alter SSH/PAM or existing OpenVPN files. VPN-to-LAN forwarding is a separate optional step.</p>
+    <pre><code>f=$(mktemp) &amp;&amp; (trap &#x27;rm -f &quot;$f&quot;&#x27; EXIT; curl -fsSL -o &quot;$f&quot; https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/install-openvpn-server.sh &amp;&amp; printf &#x27;%s  %s\n&#x27; &#x27;061967b70782b0c47901b5fdf9dc804acdc8854521aac1c0e5804d940d732f2c&#x27; &quot;$f&quot; | sha256sum -c - &amp;&amp; sudo bash &quot;$f&quot;)</code></pre>
+    <p>The server requires a client certificate and Thessley phone approval. After the first approval, OpenVPN reconnect tokens renew hourly and last up to 8 hours after renewal. The wizard prints the router ports to forward: the chosen UDP port and TCP 47830 for QR approval. Review <code>docs/VPN.md</code> in the source archive before adapting an existing VPN.</p>
+  </section>
+  <details>
+    <summary>Alternative installs and detailed setup</summary>
+    <section id="linux-alternatives">
+    <h2>Linux computer tools</h2>
+    <div class="td-card">
+      <h3>Linux source package · 22 October 2026</h3>
+      <p><strong>Documented target: Ubuntu 24.04 or 26.04 LTS</strong> on x86-64 or ARM64. The source package can also run on Debian or Armbian with systemd and the required dependencies.</p>
+      <a class="td-download" href="https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/thessley-pam-linux-2026.10.22.tar.gz">Download Linux source package</a>
+      <a href="https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/SHA256SUMS.txt">SHA-256 checksums</a>
+      <p>The maintained Git repository is hosted in GitLab. It currently requires project access; this public source archive is available without a GitLab account.</p>
+    </div>
+    <h3>Rollback</h3>
+    <p>Use the matching component uninstall steps to remove optional features. Keep the timed SSH configuration rollback armed when changing SSH or PAM:</p>
+    <pre><code>sudo apt remove thessley-pam-linux-installer</code></pre>
+    <h3>Install from the source archive instead</h3>
+    <p>Extract the archive and run the same guided setup. Its optional choices default to No:</p>
+    <pre><code>tar -xzf thessley-pam-linux-2026.10.22.tar.gz
+cd thessley-pam-linux
+sudo ./guided-install.sh</code></pre>
+    <p>The shared approval service uses TCP 47810. The web admin page is enabled by default and uses TCP 47820; restrict it to trusted networks, or enter n in the installer to skip it. Enroll a phone before enabling any login integration.</p>
+    <h3>OpenVPN with Thessley QR approval</h3>
+    <p>This Ubuntu 24.04 or 26.04 setup requires a per-device OpenVPN client certificate and Thessley phone approval. OpenVPN Connect 3.x can open the QR approval page automatically. After the first phone approval, OpenVPN reconnect tokens renew hourly and expire within 8 hours of the last renewal. The client certificate is still checked on each connection.</p>
+    <p>If you already run OpenVPN, back up its configuration and merge the Thessley authentication directives into it; do not replace a working server configuration wholesale. The commands below describe a new server named <code>thessley</code>.</p>
+    <ol>
+      <li>Install OpenVPN, Easy-RSA, and the Thessley VPN approval service. The Thessley core service must already be installed:</li>
+    </ol>
+    <pre><code>sudo apt update
+sudo apt install openvpn easy-rsa
+sudo /opt/thessley-pam-linux/install-vpn.sh</code></pre>
+    <ol start="2">
+      <li>Create an OpenVPN certificate authority and server certificate. Protect the CA private key and keep an offline backup:</li>
+    </ol>
+    <pre><code>sudo make-cadir /etc/openvpn/easy-rsa-thessley
+sudo -i
+cd /etc/openvpn/easy-rsa-thessley
+./easyrsa init-pki
+EASYRSA_ALGO=ec EASYRSA_CURVE=prime256v1 ./easyrsa build-ca
+EASYRSA_BATCH=1 EASYRSA_ALGO=ec EASYRSA_CURVE=prime256v1 ./easyrsa build-server-full server nopass
+openvpn --genkey secret pki/ta.key
+install -d -m 0755 /etc/openvpn/server
+install -o root -g root -m 0644 pki/ca.crt /etc/openvpn/server/ca.crt
+install -o root -g root -m 0644 pki/issued/server.crt /etc/openvpn/server/server.crt
+install -o root -g root -m 0600 pki/private/server.key /etc/openvpn/server/server.key
+install -o root -g root -m 0600 pki/ta.key /etc/openvpn/server/ta.key
+exit</code></pre>
+    <ol start="3">
+      <li>Create <code>/etc/openvpn/server/thessley.conf</code> for a new VPN server. Choose a tunnel range that does not overlap your LAN or other VPNs:</li>
+    </ol>
+    <pre><code>sudo tee /etc/openvpn/server/thessley.conf &gt;/dev/null &lt;&lt;'EOF'
+port 1194
+proto udp
+dev tun
+topology subnet
+server 10.8.0.0 255.255.255.0
+ca ca.crt
+cert server.crt
+key server.key
+dh none
+tls-crypt ta.key
+tls-version-min 1.2
+remote-cert-tls client
+verify-client-cert require
+script-security 2
+crl-verify /etc/openvpn/easy-rsa-thessley/pki/crl.pem
+management /run/openvpn-server/thessley.mgmt unix
+management-client-user root
+script-security 2
+auth-user-pass-verify /usr/local/lib/thessley-pam/vpn-auth via-env
+auth-gen-token 28800 3600
+auth-gen-token-secret /etc/openvpn/server/thessley-auth-token.key
+reneg-sec 3600
+push "reneg-sec 3600"
+user nobody
+group nogroup
+keepalive 10 300
+persist-key
+persist-tun
+verb 3
+EOF</code></pre>
+    <ol start="4">
+      <li>Set the public DNS name (or stable public IP) phones will use, then enroll the VPN phone while it is on the server’s network. Replace <code>ubuntu</code> with the Linux account that will own this VPN login:</li>
+    </ol>
+    <pre><code>sudo thessley-pam vpn public-host vpn.example.org
+sudo thessley-pam vpn enroll ubuntu
+sudo thessley-pam vpn on
+sudo systemctl enable --now openvpn-server@thessley
+sudo thessley-pam vpn status
+sudo systemctl status --no-pager openvpn-server@thessley</code></pre>
+    <p>Point <code>vpn.example.org</code> at your public IP. Forward <strong>UDP 1194</strong> and <strong>TCP 47830</strong> on the router to this computer. TCP 47830 serves the expiring QR approval page and phone response; UDP 1194 carries the VPN. If UFW is active, run:</p>
+    <pre><code>sudo ufw allow 1194/udp
+sudo ufw allow 47830/tcp</code></pre>
+    <p>Avoid exposing the unrelated SSH and web-admin ports to the internet.</p>
+    <ol start="5">
+      <li>Create a separate client profile for every device. Replace the account and device names. The generated <code>.ovpn</code> file contains that device’s private key; transfer it over a trusted channel and remove the extra copy afterward:</li>
+    </ol>
+    <pre><code>sudo /opt/thessley-pam-linux/vpn-new-client.sh ubuntu phone</code></pre>
+    <p>Import <code>ubuntu-phone.ovpn</code> into OpenVPN Connect or another compatible client. At sign-in, use <code>ubuntu</code> as the username (the password field is ignored), then approve the QR/link on the enrolled phone. OpenVPN Connect 3.x opens the QR page; other clients may require opening the pending-authentication URL from their log. Review the full <code>docs/VPN.md</code> guide in the Linux source archive before adapting routes or NAT for access to the rest of your LAN. The setup follows Ubuntu’s <a href="https://documentation.ubuntu.com/server/how-to/security/install-openvpn/">OpenVPN guide</a> and OpenVPN’s <a href="https://github.com/OpenVPN/easy-rsa/blob/master/README.quickstart.md">Easy-RSA quickstart</a>.</p>
+    <h3>Optional SSH integration with automatic rollback</h3>
+    <p>The SSH module install does not edit SSH or PAM policy. Keep your current SSH session open, arm rollback before editing either login configuration file, and make sure you can reach the computer locally or through another recovery path.</p>
+    <pre><code>sudo ./install-ssh.sh
+sudo ./ssh-config-rollback.sh arm 10</code></pre>
+    <p>After making the SSH/PAM changes described in <code>docs/SSH.md</code>, validate and reload:</p>
+    <pre><code>sudo sshd -t &amp;&amp; sudo systemctl reload ssh</code></pre>
+    <p>Open a new terminal and verify a fresh SSH login. <strong>To finalize and keep the changes</strong>, run this from the verified session before the timer expires:</p>
+    <pre><code>sudo ./ssh-config-rollback.sh cancel</code></pre>
+    <p>If the test login fails or the timer expires, the saved SSH and PAM files are restored automatically and SSH is reloaded. Keep the original session open until the new session is verified. For other components, use their matching <code>uninstall-*.sh</code> script to roll back installation; read the component guide before enabling its login integration.</p>
+    <p><a href="https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/SHA256SUMS.txt">Verify package checksums</a> · <a href="https://gitlab.com/martin.lundstrom/thessley-pam-linux">Linux GitLab repository (project access required)</a> · <a href="https://gitlab.com/martin.lundstrom/thessley-passkey-android">Android GitLab repository (project access required)</a></p>
+  </section>
+  </details>
+</main>
+<script>
+(() => {
+  document.querySelectorAll('.thessley-downloads pre').forEach((pre) => {
+    const code = pre.querySelector('code');
+    if (!code) return;
+    let button = pre.querySelector('.td-copy');
+    if (!button) {
+      button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'td-copy';
+      button.setAttribute('aria-label', 'Copy command');
+      button.title = 'Copy command';
+      button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"></path></svg><span class="td-copy-label">Copy</span>';
+      pre.appendChild(button);
+    }
+    button.addEventListener('click', async () => {
+      const text = code.textContent.replace(/\n+$/, '');
+      try {
+        let copied = false;
+        if (navigator.clipboard && window.isSecureContext) {
+          try {
+            await navigator.clipboard.writeText(text);
+            copied = true;
+          } catch (error) {
+            // Fall back for browsers that expose the API but deny clipboard access.
+          }
+        }
+        if (!copied) {
+          const field = document.createElement('textarea');
+          field.value = text;
+          field.setAttribute('readonly', '');
+          field.style.position = 'fixed';
+          field.style.opacity = '0';
+          field.style.fontSize = '16px';
+          document.body.appendChild(field);
+          field.focus();
+          field.select();
+          copied = document.execCommand('copy');
+          field.remove();
+          if (!copied) throw new Error('Copy failed');
+        }
+        button.setAttribute('aria-label', 'Copied');
+        button.title = 'Copied';
+        button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg><span class="td-copy-label">Copied</span>';
+        window.setTimeout(() => {
+          button.setAttribute('aria-label', 'Copy command');
+          button.title = 'Copy command';
+          button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"></path></svg><span class="td-copy-label">Copy</span>';
+        }, 1600);
+      } catch (error) {
+        button.setAttribute('aria-label', 'Copy failed; select the command manually');
+        button.title = 'Copy failed; select the command manually';
+      }
+    });
+  });
+})();
+</script>
+<!-- /wp:html -->
+
+

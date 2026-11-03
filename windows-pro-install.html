@@ -32,8 +32,9 @@
 </style>
 <main class="thessley-downloads alignwide">
   <section class="td-hero">
-    <p class="td-kicker">Thessley computer installation</p>
+    <p class="td-kicker">Thessley computer installation · <span style="display:inline-block;margin-left:.4rem;padding:.15rem .5rem;border:1px solid #b8e4f7;border-radius:999px;font-size:.72rem;letter-spacing:.08em">BETA</span></p>
     <h1>Windows 11 Pro office client</h1>
+    <p><strong>Beta:</strong> the QR sign-in tile and the password-tile step below are in active testing on Windows 11 Pro; keep a break-glass administrator and a PIN until you have confirmed them on your own machine.</p>
     <p>OpenSSH with key sign-in and the <strong>Office PC Users</strong> logon model, in three steps.</p>
     <p><a href="?page_id=16">All downloads</a> · <a href="?page_id=43">Windows agent</a> · <a href="?page_id=42">Linux</a> · <a href="?page_id=114">AD service</a></p>
   </section>
@@ -42,7 +43,7 @@
     <h2>Before you start</h2>
     <div class="td-card">
       <ul>
-        <li>Windows 11 <strong>Pro, Enterprise or Education</strong>, installed and joined to the domain — or a local account on a one-user workstation (use <code>.\Martin</code>).</li>
+        <li>Windows 11 <strong>Pro, Enterprise or Education</strong>, <strong>joined to Active Directory before Thessley is installed</strong>, with a domain account that has signed in once — or, on a one-user workstation without a domain, a local account (written as <code>.\alice</code> in commands).</li>
         <li>An elevated PowerShell window, and the user signed in once (so the profile exists).</li>
         <li>The public key of the user, or a URL that serves it.</li>
         <li>A local break-glass administrator you can still use if the domain is unreachable.</li>
@@ -56,9 +57,9 @@
     <h3>0. Check the machine, and join the domain if needed</h3>
     <p>One command reports admin rights, domain state, DNS, the signed-in user and whether OpenSSH is there:</p>
     <pre><code>&amp; ([scriptblock]::Create((irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1))) -Check</code></pre>
-    <p>If it is not joined yet, let the same script do it. It resolves the domain first, so a DNS problem is reported instead of a failed join:</p>
-    <pre><code>&amp; ([scriptblock]::Create((irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1))) -Domain lab.thessley.test</code></pre>
-    <p>It prompts for an account that may join, reboots, and prints what to run next.</p>
+    <p><strong>Join the domain before installing Thessley.</strong> The sign-in tile and the AD SSH gate resolve the signed-in domain account, so the computer must already be joined and the account must have signed in once. If the PC is not joined yet, let the same script do it — it resolves the domain first, so a DNS problem is reported instead of a failed join:</p>
+    <pre><code>&amp; ([scriptblock]::Create((irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1))) -Domain corp.example.com</code></pre>
+    <p>Use your own domain name in place of <code>corp.example.com</code>. It prompts for an account that may join, reboots, and prints what to run next. Sign in with the domain account, then continue with step 1.</p>
 
     <h3>1. Install OpenSSH Server</h3>
     <pre><code>Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
@@ -81,6 +82,15 @@ if (-not (Get-NetFirewallRule -Name OpenSSH-Server-In-TCP -ErrorAction SilentlyC
     <p>Creates the local group <strong>Office PC Users</strong> and allows only <code>Administrators</code> and that group to sign in locally, over Remote Desktop and over the network. Keep the console open while it runs.</p>
 
     <p>Steps 2 and 3 in one command, after step 1: <code>irm https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/windows-office-client.ps1 | iex</code></p>
+
+    <h3>4. Hide the Windows password tile (beta)</h3>
+    <p>Only after the Thessley QR tile is installed and tested, and only when a PIN is set. This removes the built-in password provider from the sign-in screen; the Thessley tile and the PIN remain.</p>
+    <pre><code>$p = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System'
+$passwordProvider = '{60B78E88-EAD8-445C-9CFD-0B87F74EA6CD}'
+$previous = (Get-ItemProperty $p -Name ExcludedCredentialProviders -ErrorAction SilentlyContinue).ExcludedCredentialProviders
+$entries = @($previous -split ';' | Where-Object { $_ }) + $passwordProvider
+Set-ItemProperty $p -Name ExcludedCredentialProviders -Value (($entries | Select-Object -Unique) -join ';') -Type String</code></pre>
+    <p>Lock the screen and check that the password tile is gone while the Thessley tile still works. Undo by removing <code>{60B78E88-EAD8-445C-9CFD-0B87F74EA6CD}</code> from <code>ExcludedCredentialProviders</code> (delete the value if it was the only entry).</p>
   </section>
 
   <section id="verify">

@@ -1,0 +1,6 @@
+diff --git a/thessley_pam/web.py b/thessley_pam/web.py
+--- a/thessley_pam/web.py
++++ b/thessley_pam/web.py
+@@ -943,1 +943,1 @@
+-                             f"default-src 'none'; style-src 'unsafe-inline'; img-src 'self'; connect-src 'self'; "
++                             f"default-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; "

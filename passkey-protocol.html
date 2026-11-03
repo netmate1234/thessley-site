@@ -1,0 +1,332 @@
+<!-- wp:html -->
+<style>
+.thessley-protocol{--bg:#07121f;--panel:#101f32;--panel2:#142740;--ink:#f4f8fc;--muted:#bfd0e2;--cyan:#60d5e8;--blue:#7bb8ff;--violet:#c2a4ff;--gold:#ffd078;--green:#8ce0b2;--line:#35516e;color:var(--ink);background:var(--bg);padding:clamp(1rem,4vw,3rem);border-radius:20px;font-family:inherit;line-height:1.65;color-scheme:dark}
+.thessley-protocol *{box-sizing:border-box}
+.thessley-protocol h1,.thessley-protocol h2,.thessley-protocol h3{color:var(--ink);line-height:1.16}
+.thessley-protocol h1{font-size:clamp(2.4rem,7vw,5rem);letter-spacing:-.045em;max-width:12ch;margin:.4rem 0 1rem}
+.thessley-protocol h2{font-size:clamp(1.65rem,4vw,2.5rem);letter-spacing:-.025em;margin:.2rem 0 .8rem}
+.thessley-protocol h3{font-size:1.2rem;margin:.2rem 0 .6rem}
+.thessley-protocol p,.thessley-protocol li{color:var(--muted)}
+.thessley-protocol a{color:#a9dcff;text-underline-offset:.15em}
+.thessley-protocol .pp-hero{position:relative;overflow:hidden;padding:clamp(1.5rem,5vw,4rem);border:1px solid #284568;border-radius:24px;background:radial-gradient(ellipse at 82% 38%,#1a4569 0,transparent 34%),linear-gradient(130deg,#10243b,#0b1728 65%)}
+.thessley-protocol .pp-kicker,.thessley-protocol .pp-label{color:var(--cyan);font-size:.76rem;font-weight:850;letter-spacing:.13em;text-transform:uppercase}
+.thessley-protocol .pp-hero p{max-width:65ch;font-size:1.1rem}
+.thessley-protocol .pp-chips{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.25rem}
+.thessley-protocol .pp-chip{padding:.35rem .7rem;border:1px solid #42617f;border-radius:999px;background:#10243b;color:var(--ink);font-size:.84rem;font-weight:700}
+.thessley-protocol .pp-nav{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0 2.4rem}
+.thessley-protocol .pp-nav a{padding:.45rem .7rem;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:.85rem;text-decoration:none}
+.thessley-protocol .pp-nav a:hover{border-color:var(--cyan);color:var(--ink)}
+.thessley-protocol .pp-slide{scroll-margin-top:1.5rem;margin:2.5rem 0;padding:clamp(1rem,3vw,2rem);border:1px solid #263d58;border-radius:20px;background:linear-gradient(145deg,var(--panel),#0c1929)}
+.thessley-protocol .pp-slide-head{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.2rem}
+.thessley-protocol .pp-num{display:grid;flex:0 0 2.7rem;height:2.7rem;place-items:center;border:1px solid #447191;border-radius:13px;background:#15334a;color:var(--cyan);font-weight:850}
+.thessley-protocol .pp-lead{max-width:72ch;margin:.2rem 0 1.4rem;font-size:1.03rem}
+.thessley-protocol .pp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:.85rem}
+.thessley-protocol .pp-card{padding:1rem 1.1rem;border:1px solid #304863;border-radius:15px;background:var(--panel2)}
+.thessley-protocol .pp-card p{margin:.3rem 0 0}
+.thessley-protocol .pp-tag{display:inline-block;margin:0 0 .5rem;padding:.2rem .5rem;border-radius:5px;background:#17445a;color:#a4eff6;font-size:.73rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+.thessley-protocol .pp-figure{overflow-x:auto;margin:1.2rem 0;padding:.7rem;border:1px solid #2b435e;border-radius:15px;background:#091625}
+.thessley-protocol svg{display:block;width:100%;height:auto;min-width:650px}
+.thessley-protocol .pp-figure figcaption{padding:.5rem .5rem 0;color:#aebfd1;font-size:.88rem}
+.thessley-protocol .pp-photo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:1rem;margin:1.2rem 0}
+.thessley-protocol .pp-photo{overflow:hidden;margin:0;border:1px solid #304863;border-radius:16px;background:#081522}
+.thessley-protocol .pp-photo img{display:block;width:100%;height:auto;max-height:780px;object-fit:contain;background:#0b0c10}
+.thessley-protocol .pp-photo figcaption{padding:.8rem 1rem;color:#bfd0e2;font-size:.9rem}
+.thessley-protocol .pp-code{overflow-wrap:anywhere;padding:1rem;border:1px solid #3a5572;border-radius:12px;background:#081522;color:#d8ecff;font:500 .88rem/1.8 ui-monospace,SFMono-Regular,Menlo,monospace}
+.thessley-protocol .pp-code-wrap{position:relative;margin:.8rem 0 1rem}
+.thessley-protocol .pp-code-wrap pre{overflow:auto;margin:0;padding:3.2rem 1rem 1rem;border:1px solid #3a5572;border-radius:12px;background:#081522;color:#d8ecff;font:500 .84rem/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre}
+.thessley-protocol .pp-code-wrap code{font:inherit}
+.thessley-protocol .pp-copy{position:absolute;top:.55rem;right:.55rem;display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .65rem;border:1px solid #58718d;border-radius:8px;background:#162a40;color:#eef7ff;font:700 .8rem system-ui,sans-serif;cursor:pointer}
+.thessley-protocol .pp-copy:hover{border-color:var(--cyan);background:#1b3850}
+.thessley-protocol .pp-copy svg{width:1rem;height:1rem;min-width:1rem;stroke:currentColor;fill:none;stroke-width:1.8}
+.thessley-protocol .pp-code strong{color:var(--gold)}
+.thessley-protocol .pp-mark{color:var(--cyan)}
+.thessley-protocol .pp-note{padding:1rem 1.2rem;border-left:4px solid var(--gold);border-radius:0 12px 12px 0;background:#292519;color:#ffebc3}
+.thessley-protocol .pp-note p{margin:.2rem 0;color:#ffebc3}
+.thessley-protocol .pp-step{display:grid;grid-template-columns:auto 1fr;gap:.8rem;align-items:start;margin:.7rem 0}
+.thessley-protocol .pp-step b{display:grid;width:1.8rem;height:1.8rem;place-items:center;border-radius:50%;background:#17445a;color:var(--cyan)}
+.thessley-protocol .pp-step p{margin:0}
+.thessley-protocol .pp-footer{margin-top:2rem;padding-top:1.2rem;border-top:1px solid #29415b;color:#aabdd2}
+.thessley-protocol .pp-arrow{stroke:#60d5e8;stroke-width:3;fill:none;marker-end:url(#ppArrow)}
+.thessley-protocol .pp-arrow-back{stroke:#c2a4ff;stroke-width:3;fill:none;marker-end:url(#ppArrowBack)}
+.thessley-protocol .pp-svg-box{fill:#122944;stroke:#47708f;stroke-width:2}
+.thessley-protocol .pp-svg-phone{fill:#211d3d;stroke:#9b80d7;stroke-width:2}
+.thessley-protocol .pp-svg-target{fill:#19382f;stroke:#67b994;stroke-width:2}
+.thessley-protocol .pp-svg-title{fill:#f4f8fc;font:700 18px system-ui,sans-serif}
+.thessley-protocol .pp-svg-copy{fill:#c3d2e1;font:14px system-ui,sans-serif}
+.thessley-protocol .pp-svg-small{fill:#89dbe8;font:700 12px system-ui,sans-serif;letter-spacing:.04em}
+@media(max-width:600px){.thessley-protocol{padding:.8rem}.thessley-protocol .pp-slide{padding:1rem}.thessley-protocol .pp-hero{padding:1.4rem}.thessley-protocol .pp-nav{margin-bottom:1.4rem}}
+@media(prefers-reduced-motion:no-preference){.thessley-protocol .pp-arrow,.thessley-protocol .pp-arrow-back{stroke-dasharray:9 5;animation:pp-flow 2.4s linear infinite}@keyframes pp-flow{to{stroke-dashoffset:-28}}}
+</style>
+<main class="thessley-protocol alignwide">
+  <header class="pp-hero">
+    <p class="pp-kicker">A visual guide · Thessley Passkey</p>
+    <h1>Your phone signs. The service decides.</h1>
+    <p>A Thessley approval is a short-lived, one-time request. Your phone signs the decision with its enrolled private key; the website or computer verifies that signature before continuing the login.</p>
+    <div class="pp-chips"><span class="pp-chip">private key stays on device</span><span class="pp-chip">fresh request + nonce</span><span class="pp-chip">server verifies before access</span></div>
+  </header>
+  <nav class="pp-nav" aria-label="Presentation sections"><a href="#overview">Overview</a><a href="#enrollment">Enrollment</a><a href="#key-storage">Where the key lives</a><a href="#approval">Approval flow</a><a href="#messages">Signed messages</a><a href="#provider">Build a provider</a><a href="#where">Where it fits</a><a href="#boundaries">Security boundaries</a></nav>
+
+  <section class="pp-slide" id="phone-screens">
+    <div class="pp-slide-head"><span class="pp-num">＋</span><div><p class="pp-label">The Android app</p><h2>What the user sees</h2></div></div>
+    <p class="pp-lead">Screens captured from the Thessley Passkey app on a connected Android phone. The home screenshot has the enrolled device list removed for privacy.</p>
+    <div class="pp-photo-grid">
+      <figure class="pp-photo"><img src="https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/2026/10/thessley-passkey-home-redacted.png" alt="Thessley Passkey home screen with QR scanner and sign-in link field; enrolled devices hidden" loading="lazy"><figcaption>Home: scan a QR code or open a sign-in link. Enrolled device names are hidden.</figcaption></figure>
+      <figure class="pp-photo"><img src="https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/2026/10/thessley-passkey-settings.png" alt="Thessley Passkey app security settings screen" loading="lazy"><figcaption>Settings: optional app PIN configuration. The screenshot shows the PIN currently turned off.</figcaption></figure>
+      <figure class="pp-photo"><img src="https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/2026/10/thessley-passkey-enrollment-prompt.png" alt="Thessley Passkey prompt asking whether to add this phone to a website account" loading="lazy"><figcaption>Enrollment prompt: the phone name is prefilled. Captured with a sample request link; no credential was added.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="pp-slide" id="overview">
+    <div class="pp-slide-head"><span class="pp-num">01</span><div><p class="pp-label">The idea</p><h2>QR carries a request, never the key</h2></div></div>
+    <p class="pp-lead">The computer or website creates a request and displays a QR code or app link. The phone reads enough information to identify that request, asks you to approve or deny, then returns a signed answer.</p>
+    <figure class="pp-figure">
+      <svg viewBox="0 0 1000 320" role="img" aria-labelledby="pp-overview-title pp-overview-desc">
+        <title id="pp-overview-title">Thessley approval at a glance</title><desc id="pp-overview-desc">A user starts a login. The service creates a request, the phone signs the user's approval, and the service verifies it before allowing access.</desc>
+        <defs><marker id="ppArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#60d5e8"/></marker><marker id="ppArrowBack" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#c2a4ff"/></marker></defs>
+        <rect class="pp-svg-box" x="35" y="70" width="230" height="145" rx="20"/><text class="pp-svg-title" x="65" y="112">1 · Start</text><text class="pp-svg-copy" x="65" y="145">Website or computer</text><text class="pp-svg-copy" x="65" y="172">creates a fresh request</text>
+        <rect class="pp-svg-phone" x="385" y="70" width="230" height="145" rx="20"/><text class="pp-svg-title" x="415" y="112">2 · Decide</text><text class="pp-svg-copy" x="415" y="145">Phone shows context</text><text class="pp-svg-copy" x="415" y="172">and signs your choice</text>
+        <rect class="pp-svg-target" x="735" y="70" width="230" height="145" rx="20"/><text class="pp-svg-title" x="765" y="112">3 · Verify</text><text class="pp-svg-copy" x="765" y="145">Service checks key,</text><text class="pp-svg-copy" x="765" y="172">signature and request</text>
+        <path class="pp-arrow" d="M270 125 H370"/><text class="pp-svg-small" x="285" y="108">QR / APP LINK</text>
+        <path class="pp-arrow-back" d="M620 170 H720"/><text class="pp-svg-small" x="633" y="200">SIGNED ANSWER</text>
+        <text class="pp-svg-copy" x="355" y="270">The service, not the QR image, is the authority that grants or denies access.</text>
+      </svg>
+      <figcaption>The QR is a convenient handoff. Authorization comes from verifying the phone’s signature against an enrolled public key.</figcaption>
+    </figure>
+    <div class="pp-grid"><article class="pp-card"><span class="pp-tag">On phone</span><h3>Private signing key</h3><p>Used to sign an exact message for one request. It is not sent to the computer or website.</p></article><article class="pp-card"><span class="pp-tag">On service</span><h3>Public verification key</h3><p>Registered to the account or computer. It lets the service check signatures without learning the private key.</p></article><article class="pp-card"><span class="pp-tag">In QR/link</span><h3>Request coordinates</h3><p>Request ID, nonce, service information and context needed for the app to find and describe the pending request.</p></article></div>
+  </section>
+
+  <section class="pp-slide" id="enrollment">
+    <div class="pp-slide-head"><span class="pp-num">02</span><div><p class="pp-label">Before first use</p><h2>Enrollment connects a phone key to an account</h2></div></div>
+    <p class="pp-lead">The service stores a public key and associates it with the intended user or computer. A matching code or proof-of-possession step helps confirm that the key being enrolled belongs to the phone in front of you.</p>
+    <figure class="pp-figure"><svg viewBox="0 0 1000 360" role="img" aria-labelledby="pp-enroll-title pp-enroll-desc">
+      <title id="pp-enroll-title">Enrollment sequence</title><desc id="pp-enroll-desc">A service starts a time-limited enrollment. The phone generates or selects a signing key, returns the public key with proof, and the service verifies and records it.</desc>
+      <defs><marker id="ppArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#60d5e8"/></marker><marker id="ppArrowBack" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#c2a4ff"/></marker></defs>
+      <text class="pp-svg-title" x="115" y="38">Computer / website</text><text class="pp-svg-title" x="445" y="38">Thessley app</text><text class="pp-svg-title" x="785" y="38">Enrollment service</text>
+      <path d="M150 55 V325 M500 55 V325 M835 55 V325" stroke="#425772" stroke-width="2" stroke-dasharray="6 7"/>
+      <path class="pp-arrow" d="M835 90 H510"/><text class="pp-svg-small" x="605" y="80">ONE-TIME ENROLLMENT LINK</text>
+      <path class="pp-arrow-back" d="M500 150 H165"/><text class="pp-svg-small" x="235" y="140">PUBLIC KEY + PROOF</text>
+      <path class="pp-arrow" d="M160 218 H825"/><text class="pp-svg-small" x="395" y="208">VERIFY KEY, REQUEST AND PAIRING</text>
+      <rect class="pp-svg-phone" x="395" y="238" width="210" height="62" rx="14"/><text class="pp-svg-copy" x="423" y="264">Private key remains</text><text class="pp-svg-copy" x="423" y="284">on the enrolled device</text>
+      <rect class="pp-svg-target" x="750" y="238" width="170" height="62" rx="14"/><text class="pp-svg-copy" x="777" y="274">Public key saved</text>
+    </svg><figcaption>Enrollment is its own signed operation; it is not just scanning a QR and trusting whatever key arrives.</figcaption></figure>
+    <div class="pp-note"><p><strong>Key protection varies by device.</strong> The Android app uses Android Keystore. Some devices can protect a key in secure hardware; software-backed keys are also possible. A device’s displayed attestation level is separate evidence and should not be assumed from a successful signature alone.</p></div>
+  </section>
+
+  <section class="pp-slide" id="key-storage">
+    <div class="pp-slide-head"><span class="pp-num">03</span><div><p class="pp-label">Key protection</p><h2>Where does the private key live?</h2></div></div>
+    <p class="pp-lead">The app asks Android Keystore to create and use the phone’s signing key. Keystore is the API; the device may back that key with software, a TEE, or StrongBox. The service receives the public key and may receive attestation evidence during enrollment—not the private key.</p>
+    <figure class="pp-figure"><svg viewBox="0 0 1000 400" role="img" aria-labelledby="pp-storage-title pp-storage-desc">
+      <title id="pp-storage-title">Android key storage levels and desktop TPM</title><desc id="pp-storage-desc">The Thessley app uses the Android Keystore API, which can be backed by software, a Trusted Execution Environment, or StrongBox secure hardware. A separate desktop app may keep a key in a TPM 2.0 chip.</desc>
+      <defs><marker id="ppArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#60d5e8"/></marker></defs>
+      <rect class="pp-svg-box" x="335" y="25" width="330" height="72" rx="17"/><text class="pp-svg-title" x="394" y="57">Thessley Passkey app</text><text class="pp-svg-copy" x="388" y="80">requests key creation / signing</text>
+      <path class="pp-arrow" d="M500 100 V130"/>
+      <rect class="pp-svg-phone" x="335" y="137" width="330" height="64" rx="17"/><text class="pp-svg-title" x="415" y="177">Android Keystore API</text>
+      <path d="M500 202 V228 M165 228 H835 M165 228 V248 M500 228 V248 M835 228 V248" fill="none" stroke="#60d5e8" stroke-width="2.5"/>
+      <rect class="pp-svg-box" x="35" y="252" width="260" height="112" rx="17"/><text class="pp-svg-title" x="65" y="287">Software-backed</text><text class="pp-svg-copy" x="65" y="316">Android software</text><text class="pp-svg-copy" x="65" y="338">protects / uses key</text>
+      <rect class="pp-svg-target" x="370" y="252" width="260" height="112" rx="17"/><text class="pp-svg-title" x="400" y="287">TEE</text><text class="pp-svg-copy" x="400" y="316">isolated secure world</text><text class="pp-svg-copy" x="400" y="338">inside the processor</text>
+      <rect class="pp-svg-phone" x="705" y="252" width="260" height="112" rx="17"/><text class="pp-svg-title" x="735" y="287">StrongBox</text><text class="pp-svg-copy" x="735" y="316">separate secure</text><text class="pp-svg-copy" x="735" y="338">hardware component</text>
+      <text class="pp-svg-small" x="352" y="389">DESKTOP CLIENTS MAY USE A DIFFERENT HARDWARE ROOT: TPM 2.0</text>
+    </svg><figcaption>TEE means Trusted Execution Environment. StrongBox is a more isolated secure hardware implementation. Availability and actual backing depend on the device and OS.</figcaption></figure>
+    <div class="pp-grid">
+      <article class="pp-card"><span class="pp-tag">Android · software</span><h3>Key operation in software</h3><p>The key is managed through Keystore, but the reported security level is software. It does not claim isolation by a TEE or StrongBox.</p></article>
+      <article class="pp-card"><span class="pp-tag">Android · TEE</span><h3>Trusted Execution Environment</h3><p>A hardware-isolated secure environment, often called the secure world. The key operation is protected from the normal Android environment.</p></article>
+      <article class="pp-card"><span class="pp-tag">Android · StrongBox</span><h3>Separate secure hardware</h3><p>A dedicated secure component with stronger isolation than the regular TEE path. Only some devices provide it, and it can be slower.</p></article>
+      <article class="pp-card"><span class="pp-tag">Desktop · TPM 2.0</span><h3>A different kind of hardware root</h3><p>The Thessley desktop client can use a TPM chip. The site’s optional proof checks a manufacturer certificate, activates a fresh attestation key, and verifies that the signing key is fixed to that TPM.</p></article>
+    </div>
+    <div class="pp-note" style="margin-top:1rem"><p><strong>Attestation is evidence about key storage, not the login signature.</strong> Normal approval proves that the enrolled key signed this request. Attestation is a separate enrollment-time claim about where that key was generated and protected. TPM means Trusted Platform Module; it is distinct from an Android TEE.</p></div>
+    <div class="pp-grid" style="margin-top:1rem">
+      <article class="pp-card"><span class="pp-tag">Android certificate fields</span><h3>Two security levels</h3><p><code>attestationSecurityLevel</code> says where the attestation was produced. <code>keymasterSecurityLevel</code> says where the signing key is managed. They are separate fields and can differ.</p></article>
+      <article class="pp-card"><span class="pp-tag">Current Drupal module</span><h3>It does not yet establish key residency</h3><p>The module checks the Google certificate chain, enrollment challenge, and match to the registered key, but records only <code>attestationSecurityLevel</code>; it does not read <code>keymasterSecurityLevel</code>. Its displayed level therefore does not confirm where the signing key lives. Attestation is log-only, enrollment is not blocked, and the verifier has not been validated on real devices.</p></article>
+      <article class="pp-card"><span class="pp-tag">Linux / Windows admin pages</span><h3>Parsed, but not trusted</h3><p>These pages can display both Android levels, including <code>keymasterSecurityLevel</code>, but they do not validate the Android certificate chain against a trusted root. Treat the displayed phone level there as unverified information.</p></article>
+      <article class="pp-card"><span class="pp-tag">Current TPM reporting</span><h3>Verified only after proof</h3><p>The optional TPM flow checks the manufacturer chain and key certification. It is limited to supported TPMs and maker roots; a missing or failed proof does not block enrollment. Revocation lists and firmware security are not checked.</p></article>
+    </div>
+    <p class="pp-footer">The desktop hardware module is TPM 2.0 (Trusted Platform Module), separate from Android’s TEE (Trusted Execution Environment).</p>
+  </section>
+
+  <section class="pp-slide" id="approval">
+    <div class="pp-slide-head"><span class="pp-num">04</span><div><p class="pp-label">One approval</p><h2>Fresh challenge → user choice → verified signature</h2></div></div>
+    <figure class="pp-figure"><svg viewBox="0 0 1000 430" role="img" aria-labelledby="pp-flow-title pp-flow-desc">
+      <title id="pp-flow-title">Approval request and response sequence</title><desc id="pp-flow-desc">The requesting service creates a pending request with a unique identifier and nonce, shows a QR or link, the phone obtains request details and prompts the user, signs approve or deny, and the service verifies and resolves the request.</desc>
+      <defs><marker id="ppArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#60d5e8"/></marker><marker id="ppArrowBack" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#c2a4ff"/></marker></defs>
+      <text class="pp-svg-title" x="100" y="38">Requesting session</text><text class="pp-svg-title" x="445" y="38">Thessley app</text><text class="pp-svg-title" x="780" y="38">Approval service</text>
+      <path d="M140 55 V390 M500 55 V390 M840 55 V390" stroke="#425772" stroke-width="2" stroke-dasharray="6 7"/>
+      <path class="pp-arrow" d="M145 88 H825"/><text class="pp-svg-small" x="355" y="78">CREATE REQUEST · ID + RANDOM NONCE · EXPIRY</text>
+      <path class="pp-arrow" d="M155 145 H490"/><text class="pp-svg-small" x="230" y="135">QR / LINK</text>
+      <path class="pp-arrow" d="M505 198 H830"/><text class="pp-svg-small" x="600" y="188">FETCH REQUEST CONTEXT</text>
+      <rect class="pp-svg-phone" x="395" y="215" width="210" height="58" rx="14"/><text class="pp-svg-copy" x="421" y="240">Show who / what</text><text class="pp-svg-copy" x="421" y="260">is asking</text>
+      <path class="pp-arrow-back" d="M495 294 H160"/><text class="pp-svg-small" x="250" y="284">APPROVE OR DENY + SIGNATURE</text>
+      <rect class="pp-svg-box" x="70" y="315" width="140" height="54" rx="13"/><text class="pp-svg-copy" x="93" y="348">Wait / poll</text>
+      <path class="pp-arrow" d="M840 338 H165"/><text class="pp-svg-small" x="434" y="328">VERIFY PUBLIC KEY · SIGNATURE · FRESHNESS · BINDINGS</text>
+      <text class="pp-svg-copy" x="705" y="387">Only then continue</text>
+    </svg><figcaption>Even a valid signature is not enough by itself: the service also checks that this request is still pending and belongs to the right account or machine.</figcaption></figure>
+    <div class="pp-grid"><article class="pp-card"><span class="pp-tag">1 · Request</span><h3>Unique and short-lived</h3><p>The service creates a request ID and random nonce, records the pending state, and presents a QR or app link.</p></article><article class="pp-card"><span class="pp-tag">2 · Human check</span><h3>Review the prompt</h3><p>The app shows the service and request context available to that flow. The user chooses approve or deny and unlocks signing.</p></article><article class="pp-card"><span class="pp-tag">3 · Verify</span><h3>Server decides</h3><p>The service checks the enrolled key, signature, timestamp, nonce, request state, and account or machine binding before access proceeds.</p></article></div>
+  </section>
+
+  <section class="pp-slide" id="messages">
+    <div class="pp-slide-head"><span class="pp-num">05</span><div><p class="pp-label">What is signed</p><h2>Two related protocols, separated by design</h2></div></div>
+    <p class="pp-lead">The phone signs a deterministic, pipe-separated message—not arbitrary JSON. The fixed version prefix keeps a website signature from being accepted as a computer-login signature.</p>
+    <div class="pp-grid">
+      <article class="pp-card"><span class="pp-tag">Website accounts</span><h3><code>thessley_passkey_v1</code></h3><p>It binds the response to the site’s origin, request ID, nonce, type, timestamp, and action.</p><div class="pp-code"><span class="pp-mark">thessley_passkey_v1</span> | type | request_id | <strong>origin</strong> | nonce | timestamp | action</div></article>
+      <article class="pp-card"><span class="pp-tag">Computer approvals</span><h3><code>thessley_pam_v1</code></h3><p>It binds the response to the computer identity and the account being approved.</p><div class="pp-code"><span class="pp-mark">thessley_pam_v1</span> | type | request_id | <strong>machine_id</strong> | <strong>username</strong> | nonce | timestamp | action</div></article>
+    </div>
+    <figure class="pp-figure"><svg viewBox="0 0 1000 230" role="img" aria-labelledby="pp-lock-title pp-lock-desc">
+      <title id="pp-lock-title">Protocol domain separation</title><desc id="pp-lock-desc">A website signature is checked only in the website protocol domain, and a PAM signature is checked only in the computer protocol domain.</desc>
+      <defs><marker id="ppArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#60d5e8"/></marker></defs>
+      <rect class="pp-svg-box" x="55" y="55" width="335" height="115" rx="18"/><text class="pp-svg-title" x="88" y="98">Website domain</text><text class="pp-svg-copy" x="88" y="130">origin-bound approval</text>
+      <rect class="pp-svg-target" x="610" y="55" width="335" height="115" rx="18"/><text class="pp-svg-title" x="643" y="98">Computer domain</text><text class="pp-svg-copy" x="643" y="130">machine + user bound</text>
+      <path class="pp-arrow" d="M410 95 H590"/><path d="M490 75 L530 155 M530 75 L490 155" stroke="#ffd078" stroke-width="6"/><text class="pp-svg-small" x="437" y="202">NO CROSS-PROTOCOL REPLAY</text>
+    </svg><figcaption>The distinct signed prefixes are cryptographic labels. A copied response for one protocol cannot satisfy the other protocol’s verifier.</figcaption></figure>
+    <div class="pp-note"><p><strong>Signature format:</strong> ECDSA over SHA-256 using an EC P-256 public key. The server verifies the signature with the enrolled public key and allows only a small clock skew (60 seconds in the implementation).</p></div>
+  </section>
+
+  <section class="pp-slide" id="where">
+    <div class="pp-slide-head"><span class="pp-num">06</span><div><p class="pp-label">Where it runs</p><h2>One phone app, different enforcement points</h2></div></div>
+    <div class="pp-grid">
+      <article class="pp-card"><span class="pp-tag">Website login</span><h3>WordPress / Drupal</h3><p>The browser starts a request and displays the QR. The site polls for a result; only the browser that started the request receives the authenticated session.</p></article>
+      <article class="pp-card"><span class="pp-tag">Linux</span><h3>PAM gate</h3><p>PAM pauses the protected action while a concurrent approval listener routes the phone’s signed answer to that request. SSH and sudo integrations can use this protocol family.</p></article>
+      <article class="pp-card"><span class="pp-tag">Windows</span><h3>OpenSSH gate</h3><p>Windows OpenSSH first checks the configured password or key. A forced command then waits for Thessley phone approval before starting the shell or command.</p></article>
+      <article class="pp-card"><span class="pp-tag">VPN</span><h3>Certificate + phone</h3><p>OpenVPN checks a per-device client certificate and requests a phone approval. Each connection or reconnect needs a fresh approval in this setup.</p></article>
+    </div>
+    <p class="pp-note"><strong>Same cryptographic idea; different access-control hook.</strong> The Windows gate runs after OpenSSH’s first factor, while Linux PAM can sit inside the login decision. The VPN also requires its client certificate.</p>
+  </section>
+
+  <section class="pp-slide" id="provider">
+    <div class="pp-slide-head"><span class="pp-num">07</span><div><p class="pp-label">Implementation guide</p><h2>Build a QR login provider</h2></div></div>
+    <p class="pp-lead">A QR renderer is only the handoff. Your provider must create and track a one-time login request, let the enrolled Thessley app fetch its details and submit a signed decision, verify that signature, and then complete the original browser session. The examples below show the website protocol; computer/PAM approvals use a different signed message.</p>
+    <div class="pp-grid">
+      <article class="pp-card"><span class="pp-tag">1 · Create</span><h3>Issue a pending request</h3><p>Generate an unpredictable request ID and nonce, store them with a short expiry and the browser session binding, and choose the exact HTTPS origin on the server.</p></article>
+      <article class="pp-card"><span class="pp-tag">2 · Hand off</span><h3>Show a QR or app link</h3><p>Encode <code>thessleypasskey://auth?type=login&amp;id=…&amp;nonce=…&amp;origin=…</code>. QR libraries in Python, PHP, and JavaScript can encode this URI; the URI carries no private key.</p></article>
+      <article class="pp-card"><span class="pp-tag">3 · Respond</span><h3>Accept the app’s signed result</h3><p>Expose compatible request/status/respond endpoints for the app. Store the response only after checking the request, account, action, timestamp, and signature.</p></article>
+      <article class="pp-card"><span class="pp-tag">4 · Complete</span><h3>Consume once, then sign in</h3><p>Atomically mark the request used and authenticate only the browser session that created it. Never let a polling endpoint alone grant access.</p></article>
+    </div>
+    <h3 style="margin-top:1.5rem">Enrollment: register a phone before login</h3>
+    <p>Each site origin needs its own enrolled phone credential. Start enrollment only from an authenticated account session, with CSRF protection; create a short-lived <code>enroll</code> request bound to that account; and show <code>thessleypasskey://auth?type=enroll&amp;id=…&amp;nonce=…&amp;origin=…</code>. The phone generates a new P-256 key pair and asks the user to confirm the site and account. It sends the Base64 DER/SPKI public key, a label, timestamp, and a proof signed by the new private key. Verify that proof against the submitted public key before storing that key for the account that started enrollment.</p>
+    <div class="pp-card"><span class="pp-tag">Enrollment proof</span><p>Canonical message: <code>thessley_passkey_v1|enroll|request_id|origin|nonce|timestamp|register</code>. It uses the same ECDSA P-256 / SHA-256 signature format. The proof shows possession of the new private key; it does not prove the key is hardware-backed. Keep the authenticated session, account binding, CSRF check, short expiry, rate limit, and one-time request consumption in your provider.</p></div>
+    <div class="pp-card" style="margin-top:1rem"><span class="pp-tag">Compatible API shape</span><p>Login uses <code>POST /thessley/v1/passkey/login/start</code>, then <code>GET /thessley/v1/passkey/login/{id}/status</code> and <code>POST /thessley/v1/passkey/login/{id}/respond</code>. Enrollment uses authenticated, CSRF-protected <code>POST /thessley/v1/passkey/enroll/start</code>, <code>GET /thessley/v1/passkey/enroll/{id}/status</code>, and <code>POST /thessley/v1/passkey/enroll/{id}/respond</code>. Enrollment response fields include <code>public_key</code>, <code>algorithm</code>, <code>label</code>, <code>timestamp</code>, and <code>proof_signature</code>. Keep the <code>/thessley/v1/passkey</code> prefix and match the Android client’s exact JSON contract. The signed <code>origin</code> must be the canonical HTTPS origin configured by the server.</p></div>
+    <h3 style="margin-top:1.5rem">Create the app link in three languages</h3>
+    <p>Use a cryptographically secure random nonce and an unpredictable request ID. URL-encode every query value. Pass the resulting string to any QR encoder; never put a password, private key, or long-lived bearer token in the QR.</p>
+    <div class="pp-grid">
+      <article class="pp-card"><h3>Python</h3><div class="pp-code-wrap"><button class="pp-copy" type="button" aria-label="Copy Python link example"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg><span>Copy</span></button><pre><code>import secrets
+from urllib.parse import urlencode
+
+request_id = secrets.token_urlsafe(24)
+nonce = secrets.token_urlsafe(32)
+origin = "https://login.example.com"  # fixed server configuration
+app_link = "thessleypasskey://auth?" + urlencode({
+    "type": "login", "id": request_id, "nonce": nonce, "origin": origin
+})</code></pre></div></article>
+      <article class="pp-card"><h3>PHP</h3><div class="pp-code-wrap"><button class="pp-copy" type="button" aria-label="Copy PHP link example"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg><span>Copy</span></button><pre><code>&lt;?php
+$requestId = rtrim(strtr(base64_encode(random_bytes(24)), '+/', '-_'), '=');
+$nonce = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
+$origin = 'https://login.example.com'; // fixed server configuration
+$appLink = 'thessleypasskey://auth?' . http_build_query([
+    'type' =&gt; 'login', 'id' =&gt; $requestId, 'nonce' =&gt; $nonce, 'origin' =&gt; $origin,
+]);</code></pre></div></article>
+      <article class="pp-card"><h3>Node.js</h3><div class="pp-code-wrap"><button class="pp-copy" type="button" aria-label="Copy Node.js link example"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg><span>Copy</span></button><pre><code>const { randomBytes } = require('node:crypto');
+const query = new URLSearchParams({
+  type: 'login',
+  id: randomBytes(24).toString('base64url'),
+  nonce: randomBytes(32).toString('base64url'),
+  origin: 'https://login.example.com' // fixed server configuration
+});
+const appLink = `thessleypasskey://auth?${query}`;</code></pre></div></article>
+    </div>
+    <div class="pp-note" style="margin-top:1rem"><p><strong>Canonical website message (exact UTF-8 bytes):</strong> <code>thessley_passkey_v1|type|request_id|origin|nonce|timestamp|action</code>. The app returns a Base64 DER ECDSA signature made with P-256 and SHA-256. Look up the public key by the enrolled <code>credential_id</code>; do not trust a key supplied with the approval. For PAM/computer requests, the signed form is <code>thessley_pam_v1|type|request_id|machine_id|username|nonce|timestamp|action</code>.</p></div>
+    <h3 style="margin-top:1.5rem">Python · verify a website response</h3>
+    <p>Requires Python’s <code>cryptography</code> package. This helper checks the signed fields and freshness; your route must also check pending state, account ownership, expected origin, and one-time consumption.</p>
+    <div class="pp-code-wrap"><button class="pp-copy" type="button" aria-label="Copy Python example"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg><span>Copy</span></button><pre><code>import base64
+import time
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.exceptions import InvalidSignature
+
+def verify_website_response(public_key_pem, response, expected_origin):
+    fields = [response[k] for k in ("type", "request_id", "origin", "nonce", "timestamp", "action")]
+    if response["origin"] != expected_origin or response["action"] not in {"approve", "deny"}:
+        return False
+    if any("|" in str(value) for value in fields):
+        return False
+    timestamp = int(response["timestamp"])
+    if abs(int(time.time()) - timestamp) &gt; 60:
+        return False
+    message = "thessley_passkey_v1|" + "|".join(map(str, fields))
+    key = serialization.load_pem_public_key(public_key_pem)
+    if not isinstance(key, ec.EllipticCurvePublicKey) or not isinstance(key.curve, ec.SECP256R1):
+        return False
+    signature = base64.b64decode(response["signature"], validate=True)
+    try:
+        key.verify(signature, message.encode("utf-8"), ec.ECDSA(hashes.SHA256()))
+        return True
+    except (InvalidSignature, ValueError, TypeError):
+        return False</code></pre></div>
+    <h3>PHP · verify the same signed message</h3>
+    <p><code>$publicKeyPem</code> must come from the trusted enrolled-key record. For an SPKI public key stored as Base64 DER, wrap the decoded DER in a PEM <code>PUBLIC KEY</code> block first.</p>
+    <div class="pp-code-wrap"><button class="pp-copy" type="button" aria-label="Copy PHP example"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg><span>Copy</span></button><pre><code>&lt;?php
+function verifyWebsiteResponse(array $r, string $publicKeyPem, string $expectedOrigin): bool {
+    $keys = ['type', 'request_id', 'origin', 'nonce', 'timestamp', 'action'];
+    foreach ($keys as $key) {
+        if (!isset($r[$key]) || str_contains((string)$r[$key], '|')) return false;
+    }
+    if ($r['origin'] !== $expectedOrigin || !in_array($r['action'], ['approve', 'deny'], true)) return false;
+    if (!ctype_digit((string)$r['timestamp']) || abs(time() - (int)$r['timestamp']) &gt; 60) return false;
+    $message = 'thessley_passkey_v1|' . implode('|', array_map(fn($k) =&gt; (string)$r[$k], $keys));
+    $signature = base64_decode($r['signature'] ?? '', true);
+    if ($signature === false) return false;
+    return openssl_verify($message, $signature, $publicKeyPem, OPENSSL_ALGO_SHA256) === 1;
+}</code></pre></div>
+    <h3>Node.js · verify with the built-in crypto module</h3>
+    <p>This accepts the enrolled public key as Base64 DER SubjectPublicKeyInfo and the response signature as Base64 DER ECDSA.</p>
+    <div class="pp-code-wrap"><button class="pp-copy" type="button" aria-label="Copy Node.js example"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg><span>Copy</span></button><pre><code>const crypto = require('node:crypto');
+
+function verifyWebsiteResponse(r, publicKeySpkiBase64, expectedOrigin) {
+  const keys = ['type', 'request_id', 'origin', 'nonce', 'timestamp', 'action'];
+  if (keys.some(k =&gt; typeof r[k] !== 'string' || r[k].includes('|'))) return false;
+  if (r.origin !== expectedOrigin || !['approve', 'deny'].includes(r.action)) return false;
+  if (!/^\d+$/.test(r.timestamp) || Math.abs(Date.now() / 1000 - Number(r.timestamp)) &gt; 60) return false;
+  const message = 'thessley_passkey_v1|' + keys.map(k =&gt; r[k]).join('|');
+  try {
+    const signature = Buffer.from(r.signature, 'base64');
+    if (signature.toString('base64') !== r.signature) return false;
+    const key = crypto.createPublicKey({
+      key: Buffer.from(publicKeySpkiBase64, 'base64'), format: 'der', type: 'spki'
+    });
+    return key.asymmetricKeyType === 'ec' &amp;&amp;
+      key.asymmetricKeyDetails.namedCurve === 'prime256v1' &amp;&amp;
+      crypto.verify('sha256', Buffer.from(message, 'utf8'),
+        { key, dsaEncoding: 'der' }, signature);
+  } catch { return false; }
+}</code></pre></div>
+    <div class="pp-note"><p><strong>Production checks every implementation needs:</strong> HTTPS; server-owned origin; cryptographically random IDs/nonces; strict expiry and a ±60-second timestamp window; only the expected request type and actions; account and credential ownership checks; signature verification against the already-enrolled key; atomic single-use state transition; browser-session binding; rate limits; key revocation; and careful audit logging. Do not log passwords, private keys, raw approval links, or reusable secrets.</p></div>
+    <p class="pp-footer">These snippets demonstrate signature verification, not a complete drop-in server. The Thessley app expects the established API and URI formats; a different mobile client needs its own app-link handling and signing implementation.</p>
+  </section>
+
+  <section class="pp-slide" id="boundaries">
+    <div class="pp-slide-head"><span class="pp-num">08</span><div><p class="pp-label">What the protocol guarantees</p><h2>Strong checks—and clear limits</h2></div></div>
+    <div class="pp-grid">
+      <article class="pp-card"><span class="pp-tag">Replay resistance</span><h3>Nonce + request state</h3><p>A signature is tied to a specific pending request. Used, expired, or already-resolved requests are rejected.</p></article>
+      <article class="pp-card"><span class="pp-tag">Context binding</span><h3>Origin or machine/account</h3><p>Website and computer signatures cover different identifying fields, so approval is scoped to the intended service.</p></article>
+      <article class="pp-card"><span class="pp-tag">Key lifecycle</span><h3>Enrollment and revocation</h3><p>Only registered public keys are trusted. Removing a device from the service blocks future approvals from that key.</p></article>
+      <article class="pp-card"><span class="pp-tag">Device assurance</span><h3>Hardware is not implied</h3><p>Successful signing proves possession of the key, not by itself that the key is hardware-backed or that the whole phone is uncompromised.</p></article>
+    </div>
+    <div class="pp-note" style="margin-top:1rem"><p><strong>Terminology:</strong> Thessley Passkey is an app-level challenge-and-signature approval flow. It is not the browser WebAuthn/FIDO2 login ceremony. Hardware attestation can add evidence for supported devices, but it is optional and distinct from normal signature verification.</p></div>
+    <p class="pp-footer">Protocol details summarized from the Thessley Passkey website module and the Thessley PAM Linux/Windows implementations. Message fields and access hooks vary by integration; check that integration’s own setup guide before enabling it.</p>
+  </section>
+</main>
+<script>
+document.querySelectorAll('.thessley-protocol .pp-copy').forEach(function(button){
+  button.addEventListener('click', async function(){
+    const code = button.parentElement.querySelector('pre code');
+    try {
+      await navigator.clipboard.writeText(code.innerText);
+      const label = button.querySelector('span');
+      label.textContent = 'Copied';
+      window.setTimeout(function(){ label.textContent = 'Copy'; }, 1400);
+    } catch (_) {
+      const label = button.querySelector('span');
+      label.textContent = 'Select code';
+      window.setTimeout(function(){ label.textContent = 'Copy'; }, 1800);
+    }
+  });
+});
+</script>
+<!-- /wp:html -->
