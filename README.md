@@ -18,7 +18,7 @@ HTML and publishing scripts for the project pages served from the OPI5.
 
 The `publish-*.php` files are `wp eval-file` scripts: they create or update the matching WordPress page, so content lives here in git and is pushed to the site as a deliberate step.
 
-The Thessley Projects home uses the redacted login screenshots in `screenshots/`; publish them under `/wp-content/uploads/thessley-screenshots/` before running its publisher.
+The Thessley Projects home uses login screenshots with visible, inactive demo QR codes in `screenshots/`; these encode an invalid example address and cannot approve logins. Publish them under `/wp-content/uploads/thessley-screenshots/` before running its publisher.
 
 ## Related
 
