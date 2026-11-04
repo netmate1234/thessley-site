@@ -21,8 +21,15 @@
 .thessley-portal .tp-card a,.thessley-portal .tp-inline-link{color:var(--tp-blue);font-weight:750}
 .thessley-portal .tp-note{padding:1.2rem 1.4rem;border-left:4px solid #2387b9;border-radius:0 12px 12px 0;background:var(--tp-pale);color:#29415c;line-height:1.65}
 .thessley-portal .tp-screenshot{margin:1rem 0;text-align:center}
+.thessley-portal .tp-screenshot a{display:block;cursor:zoom-in}
 .thessley-portal .tp-screenshot img{display:block;width:100%;height:auto;max-height:330px;object-fit:contain;margin:0 auto;border:1px solid #dce5ed;border-radius:10px;background:#f2f4f7}
 .thessley-portal .tp-screenshot figcaption{margin-top:.5rem;color:var(--tp-muted);font-size:.84rem;line-height:1.5}
+.tp-lightbox{position:fixed;max-width:min(96vw,1100px);max-height:96vh;padding:2.5rem 1rem 1rem;border:0;border-radius:14px;background:#101722;color:#fff;box-shadow:0 24px 80px rgba(0,0,0,.55)}
+.tp-lightbox::backdrop{background:rgba(5,12,22,.86)}
+.tp-lightbox img{display:block;width:auto;height:auto;max-width:calc(96vw - 2rem);max-height:calc(92vh - 3.5rem);margin:auto;object-fit:contain}
+.tp-lightbox figcaption{padding:.7rem .25rem 0;color:#d4deea;text-align:center;font-size:.9rem}
+.tp-lightbox-close{position:absolute;top:.35rem;right:.45rem;width:2rem;height:2rem;border:0;border-radius:50%;background:#263547;color:#fff;font-size:1.4rem;line-height:1;cursor:pointer}
+.tp-lightbox-close:focus-visible{outline:2px solid #9bd8f5;outline-offset:2px}
 @media(prefers-color-scheme:dark){.thessley-portal .tp-card{background:#171e28;border-color:#394656}.thessley-portal .tp-card p{color:#c0ccda}.thessley-portal .tp-note{background:#192d40;color:#d8e9f5}.thessley-portal .tp-label{background:#20364a;color:#b8e4f7}}
 </style>
 <main class="thessley-portal alignwide">
@@ -145,4 +152,38 @@
     <p><a class="tp-inline-link" href="https://wp-opsec.eagleeye-intelligence.com/?page_id=16">Go to Downloads &amp; Installation →</a></p>
   </section>
 </main>
+<dialog class="tp-lightbox" aria-label="Full-size screenshot">
+  <button class="tp-lightbox-close" type="button" aria-label="Close full-size image">×</button>
+  <img alt="">
+  <figcaption></figcaption>
+</dialog>
+<script>
+(() => {
+  const dialog = document.querySelector('.tp-lightbox');
+  if (!dialog || !dialog.showModal) return;
+  const preview = dialog.querySelector('img');
+  const caption = dialog.querySelector('figcaption');
+  const closeButton = dialog.querySelector('.tp-lightbox-close');
+  let opener;
+  document.querySelectorAll('.thessley-portal .tp-screenshot a').forEach(link => {
+    link.addEventListener('click', event => {
+      event.preventDefault();
+      opener = link;
+      preview.src = link.href;
+      preview.alt = link.querySelector('img')?.alt || 'Full-size screenshot';
+      caption.textContent = link.closest('figure')?.querySelector('figcaption')?.textContent || '';
+      dialog.showModal();
+      closeButton.focus();
+    });
+  });
+  closeButton.addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', event => {
+    if (event.target === dialog) dialog.close();
+  });
+  dialog.addEventListener('close', () => {
+    preview.removeAttribute('src');
+    opener?.focus();
+  });
+})();
+</script>
 <!-- /wp:html -->
