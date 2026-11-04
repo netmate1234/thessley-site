@@ -10,12 +10,15 @@ HTML and publishing scripts for the project pages served from the OPI5.
 
 | Page | Source | Publisher |
 |---|---|---|
+| Thessley Projects home | `homepage.html` + `screenshots/` | `publish-homepage-use-cases.php` |
 | Windows Pro install | `windows-pro-install.html` | `publish-windows-pro-install.php` |
 | AD service install | `ad-service-install.html` | `publish-ad-service-install.php` |
 | Downloads | `downloads.html` | `publish-downloads.php` |
 | Passkey protocol | `passkey-protocol.html` | `publish-passkey-protocol.php` |
 
 The `publish-*.php` files are `wp eval-file` scripts: they create or update the matching WordPress page, so content lives here in git and is pushed to the site as a deliberate step.
+
+The Thessley Projects home uses the redacted login screenshots in `screenshots/`; publish them under `/wp-content/uploads/thessley-screenshots/` before running its publisher.
 
 ## Related
 

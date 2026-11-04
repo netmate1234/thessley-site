@@ -13,13 +13,16 @@
 .thessley-portal .tp-section{margin:3.5rem 0}
 .thessley-portal .tp-section h2{font-size:clamp(1.7rem,3vw,2.25rem);letter-spacing:-.025em}
 .thessley-portal .tp-lead{max-width:65ch;color:var(--tp-muted);line-height:1.7}
-.thessley-portal .tp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:1rem;margin-top:1.5rem}
+.thessley-portal .tp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,285px),1fr));gap:1rem;margin-top:1.5rem}
 .thessley-portal .tp-card{padding:1.5rem;border:1px solid #dce5ed;border-radius:18px;background:#fff;box-shadow:0 8px 24px rgba(23,36,58,.055)}
 .thessley-portal .tp-card h3{margin:.45rem 0 .7rem;font-size:1.3rem}
 .thessley-portal .tp-card p{color:var(--tp-muted);line-height:1.65}
 .thessley-portal .tp-label{display:inline-block;padding:.28rem .55rem;border-radius:999px;background:var(--tp-pale);color:var(--tp-blue);font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
 .thessley-portal .tp-card a,.thessley-portal .tp-inline-link{color:var(--tp-blue);font-weight:750}
 .thessley-portal .tp-note{padding:1.2rem 1.4rem;border-left:4px solid #2387b9;border-radius:0 12px 12px 0;background:var(--tp-pale);color:#29415c;line-height:1.65}
+.thessley-portal .tp-screenshot{margin:1rem 0;text-align:center}
+.thessley-portal .tp-screenshot img{display:block;width:100%;height:auto;max-height:330px;object-fit:contain;margin:0 auto;border:1px solid #dce5ed;border-radius:10px;background:#f2f4f7}
+.thessley-portal .tp-screenshot figcaption{margin-top:.5rem;color:var(--tp-muted);font-size:.84rem;line-height:1.5}
 @media(prefers-color-scheme:dark){.thessley-portal .tp-card{background:#171e28;border-color:#394656}.thessley-portal .tp-card p{color:#c0ccda}.thessley-portal .tp-note{background:#192d40;color:#d8e9f5}.thessley-portal .tp-label{background:#20364a;color:#b8e4f7}}
 </style>
 <main class="thessley-portal alignwide">
@@ -29,7 +32,7 @@
     <p>Thessley brings together phone-approved sign-in, computer access tools, and modular WordPress security. Each project has its own requirements and release status.</p>
     <div class="tp-actions">
       <a class="tp-button" href="https://wp-opsec.eagleeye-intelligence.com/?page_id=16">Downloads and installation</a>
-      <a class="tp-button tp-button-alt" href="?page_id=__PASSKEY_PRESENTATION_ID__">How Thessley approvals work</a>
+      <a class="tp-button tp-button-alt" href="?page_id=45">How Thessley approvals work</a>
       <a class="tp-button tp-button-alt" href="#projects">Explore projects</a>
     </div>
   </section>
@@ -43,7 +46,7 @@
         <h3>Thessley Passkey</h3>
         <p>Approve compatible sign-in requests from websites and computers with your phone. The Android app supports QR codes and approval links, with biometric confirmation for signing requests.</p>
         <p><strong>Android availability:</strong> version 0.1.11 is available as a direct APK download. Google Play testing remains a separate distribution route.</p>
-        <a href="?page_id=__PASSKEY_PRESENTATION_ID__">See the visual protocol presentation →</a><br>
+        <a href="?page_id=45">See the visual protocol presentation →</a><br>
         <a href="https://wp-opsec.eagleeye-intelligence.com/?page_id=16#android">Check availability and install options →</a>
       </article>
       <article class="tp-card">
@@ -62,7 +65,74 @@
         <p>Modules can be configured independently. Start by reviewing logged events before enabling blocking features.</p>
         <a href="https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-downloads/thessley-security-hardening-1.0.23.zip">Download version 1.0.23 (ZIP) →</a>
       </article>
+      <article class="tp-card">
+        <span class="tp-label">Drupal</span>
+        <h3>Thessley Passkey for Drupal</h3>
+        <p>QR or one-tap sign-in for Drupal's <code>/user/login</code>, with optional, password-then-app, or app-only modes. The same Thessley Passkey app works with WordPress and Drupal.</p>
+        <p>Requires Drupal 10.6+ or 11 and PHP 8.3+.</p>
+        <a href="https://github.com/netmate1234/thessley-passkey-drupal">View the Drupal project and install guide →</a>
+      </article>
     </div>
+  </section>
+
+  <section class="tp-section" id="use-cases">
+    <h2>Use cases across your systems</h2>
+    <p class="tp-lead">Thessley covers WordPress security and phone-approved access for supported computers and VPNs. These are separate components with different requirements—start with one system, a limited pilot, and a verified recovery path.</p>
+    <div class="tp-grid">
+      <article class="tp-card">
+        <span class="tp-label">Agencies</span>
+        <h3>A repeatable site review</h3>
+        <p>For agencies maintaining several WordPress sites, use one pilot site to review configuration, observe the event log, and document a safe rollout and rollback before deciding whether to standardize.</p>
+        <a href="https://wp-opsec.eagleeye-intelligence.com/?page_id=16#wordpress">Review the WordPress evaluation package →</a>
+      </article>
+      <article class="tp-card">
+        <span class="tp-label">Small teams</span>
+        <h3>Reduce admin-account exposure</h3>
+        <p>Review who has administrator access, improve the site's hardening baseline, and assess phone-approved sign-in for staff accounts. Test device loss, revocation, and account recovery before production use.</p>
+        <figure class="tp-screenshot">
+          <img src="https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-screenshots/wordpress-passkey-login.jpg" alt="Thessley-enabled WordPress login asking for a username before continuing" loading="lazy">
+          <figcaption>WordPress sign-in: identify the account, then continue with its configured passkey mode.</figcaption>
+        </figure>
+        <a href="https://github.com/netmate1234/thessley-passkey-wordpress">Explore Passkey for WordPress →</a>
+      </article>
+      <article class="tp-card">
+        <span class="tp-label">Stores &amp; memberships</span>
+        <h3>Scope protection to site operators</h3>
+        <p>Evaluate controls for staff signing in to WordPress administration. The passkey project concerns WordPress sign-in; it does not secure customer checkout, payment processing, or hosting by itself.</p>
+        <a href="https://wp-opsec.eagleeye-intelligence.com/?page_id=16#wordpress">See requirements and staging guidance →</a>
+      </article>
+      <article class="tp-card">
+        <span class="tp-label">Drupal site teams</span>
+        <h3>Protect editor and administrator sign-in</h3>
+        <p>Add QR or one-tap Thessley approval to Drupal's <code>/user/login</code>. Choose optional, password-then-app, or app-only login, then test enrollment, revocation, and account recovery on staging.</p>
+        <p>Supports Drupal 10.6+ or 11 with PHP 8.3+.</p>
+        <a href="https://github.com/netmate1234/thessley-passkey-drupal">Drupal module source and setup guide →</a>
+      </article>
+      <article class="tp-card">
+        <span class="tp-label">Linux administrators</span>
+        <h3>Step-up approval for sensitive access</h3>
+        <p>For supported Linux hosts, add phone approval to selected actions such as SSH or sudo. Pilot one account and service first, and keep console recovery available.</p>
+        <a href="https://wp-opsec.eagleeye-intelligence.com/?page_id=42">Linux installation and requirements →</a>
+      </article>
+      <article class="tp-card">
+        <span class="tp-label">Windows &amp; Active Directory</span>
+        <h3>Add approval to supported admin workflows</h3>
+        <p>Use the Windows packages for supported SSH and administrator workflows, or evaluate the AD service for a domain environment. Confirm OS, domain, and recovery requirements before rollout.</p>
+        <figure class="tp-screenshot">
+          <img src="https://wp-opsec.eagleeye-intelligence.com/wp-content/uploads/thessley-screenshots/windows-phone-approval.jpg" alt="Redacted Windows sign-in screen waiting for Thessley phone approval; QR and account details removed" loading="lazy">
+          <figcaption>Windows / AD sign-in awaiting phone approval. Account details and one-time QR are redacted.</figcaption>
+        </figure>
+        <a href="https://wp-opsec.eagleeye-intelligence.com/?page_id=43">Windows installation →</a><br>
+        <a href="https://wp-opsec.eagleeye-intelligence.com/?page_id=114">AD service installation →</a>
+      </article>
+      <article class="tp-card">
+        <span class="tp-label">Remote VPN access</span>
+        <h3>Certificate plus a human approval</h3>
+        <p>The Ubuntu OpenVPN integration checks a separate client certificate, then requests a time-limited phone approval for each connection and reconnect.</p>
+        <a href="https://wp-opsec.eagleeye-intelligence.com/?page_id=16#linux">Ubuntu OpenVPN setup →</a>
+      </article>
+    </div>
+    <p class="tp-note"><strong>Considering a pilot?</strong> Start on staging or one non-critical host, document scope and rollback, and verify recovery before production. Thessley tools do not replace patching, backups, endpoint/hosting security, incident response, or an independent security assessment.</p>
   </section>
 
   <section class="tp-section">
